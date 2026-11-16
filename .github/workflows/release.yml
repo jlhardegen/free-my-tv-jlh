@@ -1,10 +1,16 @@
-# Publishes a GitHub release with FreeMyTV-tizen.wgt, the package TizenBrew Installer and your own install take. Runs only
-# when you start it by hand: Actions → Release → Run workflow. The release is tagged with the version in tizen/config.xml,
-# so bump that version first: a version that already has a release stops the run and nothing is replaced.
+# Publishes a GitHub release with FreeMyTV-tizen.wgt, signed with your Tizen author certificate, so 2015-2022 TVs install it
+# (and 2023+ TVs too, through TizenBrew Installer). Runs only when you start it by hand: Actions → Release → Run workflow.
+# The release is tagged with the version in tizen/config.xml, so bump that version first: a version that already has a
+# release stops the run and nothing is replaced.
+#
+# Needs three repository secrets (Settings → Secrets and variables → Actions), never committed:
+#   TIZEN_AUTHOR_P12      the author certificate (author.p12 from `tizen certificate`), base64-encoded:
+#                         base64 -w0 author.p12 > author.p12.b64, then paste the file's contents
+#   TIZEN_CERT_PASSWORD   that certificate's password
+#   TIZEN_PROFILE_NAME    optional: the name of the signing profile (default "release")
 #
 # The package is built without config.properties (no TMDB key, the city from the TV's time zone), as the upstream
-# releases are. It is not signed here: TVs from 2023 take it as it is (TizenBrew Installer signs it with their Samsung
-# certificate), but 2017-2022 TVs need a package signed with the author certificate (tizen/build.py --sign).
+# releases are. The run fails rather than publish an unsigned package: a 2015-2022 TV refuses one.
 name: Release
 
 on:
@@ -16,12 +22,69 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      TIZEN_STUDIO: ${{ runner.temp }}/tizen-studio
+      TIZEN_DATA: ${{ runner.temp }}/tizen-studio-data
+      PROFILE: ${{ secrets.TIZEN_PROFILE_NAME || 'release' }}
     steps:
       - uses: actions/checkout@v7
       - name: Check the catalogues and the web app
         run: bash tools/check.sh
-      - name: Build the package
-        run: python3 tizen/build.py --generic
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # Samsung's command-line tools, from the same package list Tizen Studio's installer reads. Each zip's SHA-256 is
+      # checked before it is unpacked.
+      - name: Install Samsung's signing tools
+        run: |
+          base=https://download.tizen.org/sdk/tizenstudio/official/binary
+          mkdir -p "$TIZEN_STUDIO" "$TIZEN_DATA" "$RUNNER_TEMP/tizen-zips"
+          fetch() {
+            curl -fsSL -o "$RUNNER_TEMP/tizen-zips/$1.zip" "$base/$1_$2_ubuntu-64.zip"
+            echo "$3  $RUNNER_TEMP/tizen-zips/$1.zip" | sha256sum -c -
+            unzip -q "$RUNNER_TEMP/tizen-zips/$1.zip" -d "$RUNNER_TEMP/tizen-zips/$1"
+            cp -r "$RUNNER_TEMP/tizen-zips/$1/data/." "$TIZEN_STUDIO/"
+          }
+          fetch sdk-utils 0.2.26 e9f79301a4f1783523dffd4dbb6835343c39bf47a3d8e108b394ccf42ba55358
+          fetch sdk-utils-core 0.2.26 052ab3197e436cd0fd841ef7e75d73b1a6fc4cd4d28415bb60dfbdf9c84272e2
+          fetch certificate-generator 0.1.4 446aa52f249205f4ad573173b02c9c38aa5de0316028b77dd189e44fd5f75964
+          fetch new-common-cli 2.5.107 cbb1c80060a5bbec735f35376789195f8e4b04b3745f9ed6251c343415d34ddc
+          find "$TIZEN_STUDIO" -path '*/bin/*' -type f -exec chmod +x {} +
+          printf '%s\n' \
+            "TIZEN_SDK_INSTALLED_PATH=$TIZEN_STUDIO" \
+            "TIZEN_SDK_DATA_PATH=$TIZEN_DATA" \
+            "JDK_PATH=$JAVA_HOME" > "$TIZEN_STUDIO/sdk.info"
+          test -x "$TIZEN_STUDIO/tools/ide/bin/tizen"
+
+      - name: Load the author certificate
+        env:
+          P12_B64: ${{ secrets.TIZEN_AUTHOR_P12 }}
+          CERT_PASSWORD: ${{ secrets.TIZEN_CERT_PASSWORD }}
+        run: |
+          if [ -z "$P12_B64" ] || [ -z "$CERT_PASSWORD" ]; then
+            echo "Add the TIZEN_AUTHOR_P12 and TIZEN_CERT_PASSWORD secrets first." >&2
+            exit 1
+          fi
+          p12="$RUNNER_TEMP/author.p12"
+          echo "$P12_B64" | base64 -d > "$p12"
+          chmod 600 "$p12"
+          "$TIZEN_STUDIO/tools/ide/bin/tizen" security-profiles add -n "$PROFILE" -a "$p12" -p "$CERT_PASSWORD"
+          rm -f "$p12"
+          # No keyring on a runner: leave the passwords empty so the CLI asks for them, and answer that prompt below.
+          profiles="$TIZEN_DATA/profile/profiles.xml"
+          sed -i 's/password="[^"]*"/password=""/g' "$profiles"
+
+      # The CLI asks for the certificate password on a terminal, not a pipe, so the build runs under `script`.
+      - name: Build and sign the package
+        env:
+          CERT_PASSWORD: ${{ secrets.TIZEN_CERT_PASSWORD }}
+        run: |
+          printf '%s\n' "$CERT_PASSWORD" | script -qec "python3 tizen/build.py --generic --sign $PROFILE" /dev/null
+          python3 -c "import zipfile,sys; n=zipfile.ZipFile('FreeMyTV-tizen.wgt').namelist(); sys.exit(0 if 'author-signature.xml' in n and 'signature1.xml' in n else 1)"
+
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -31,4 +94,4 @@ jobs:
           gh release create "v$version" FreeMyTV-tizen.wgt \
             --target "$GITHUB_SHA" \
             --title "Free My TV $version (Samsung)" \
-            --notes "Samsung package for TizenBrew Installer and Samsung's Developer Mode. Built without a TMDB key: type yours in Home Settings on the TV."
+            --notes "Signed Samsung package for TizenBrew Installer and Samsung's Developer Mode. Built without a TMDB key: type yours in Home Settings on the TV."
