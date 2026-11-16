@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Translation catalogues for the Android app and the LG/Samsung web app (app/assets/i18n/<lang>.json).
+"""Translation catalogues for the Samsung web app (app/assets/i18n/<lang>.json).
 
     python3 tools/translate.py                 # extract en.json from the code, report what each language lacks
     python3 tools/translate.py --fill          # also translate the missing strings (needs ANTHROPIC_API_KEY)

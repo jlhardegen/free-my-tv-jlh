@@ -209,7 +209,7 @@ def main():
                     '(a failed install can leave one). Remove it, then run this again:\n    python3 tizen/install.py %s '
                     '--uninstall\n(That also clears what Free My TV keeps on the TV, such as a TMDB key typed there.) '
                     'Still failed[118] after that? Some models refuse developer installs altogether (a 2016 Full HD '
-                    'K5670 did, #349): a Google TV streamer on HDMI runs Free My TV there.' % ip)
+                    'K5670 did, #349): there is no fix from this app.' % ip)
         elif 'failed[116]' in out:
             # "download failed[116]" comes within milliseconds, before any certificate check, and for any package: a
             # 2020 UE55TU7020 answered it even to a minimal app, and installed once ~70 MB were free (#490). The same

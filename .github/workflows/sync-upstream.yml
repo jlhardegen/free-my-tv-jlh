@@ -1,0 +1,39 @@
+# Merges simbasjungles/free-my-tv into this fork, then keeps the fork Tizen-only (tools/keep-tizen-only.sh). Runs only
+# when you start it by hand: Actions → Sync from upstream → Run workflow.
+name: Sync from upstream
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Merge upstream main and keep it Tizen-only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/simbasjungles/free-my-tv.git
+          git fetch upstream main
+          if ! git merge --no-edit upstream/main; then
+            # Settle only the conflicts the lists know; anything else stops the run with the merge undone.
+            if ! bash tools/keep-tizen-only.sh --settle; then
+              git merge --abort
+              exit 1
+            fi
+          fi
+          bash tools/keep-tizen-only.sh
+          git add -A
+          if git rev-parse -q --verify MERGE_HEAD > /dev/null; then
+            git commit --no-edit
+          elif ! git diff --cached --quiet; then
+            git commit -m "Keep Tizen only"
+          fi
+          # A clean merge already made its own commit; pushing again is a no-op when nothing changed.
+          git push origin HEAD:main

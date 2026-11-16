@@ -1,0 +1,40 @@
+# What this Tizen-only fork keeps and removes. Read by tools/keep-tizen-only.sh and the "Sync from upstream" workflow.
+# One path per line, relative to the repository root. A folder covers everything under it.
+
+[remove]
+app/src
+app/AndroidManifest.xml
+app/res/drawable-nodpi
+app/res/values
+app/res/values-ru
+app/res/values-v30
+app/res/values-v31
+app/res/values-v33
+app/res/xml
+webos
+docs
+.github/workflows/pages.yml
+build.sh
+.github/ISSUE_TEMPLATE
+tests/NetPictureTest.java
+tests/SabrinaRemoteTest.java
+tests/SkyworthRemoteTest.java
+tests/VisibleOrderTest.java
+tools/homebrew_repo.py
+tools/make_art.py
+tools/photos.py
+tools/send_key.py
+tools/test-net.sh
+tools/test-order.sh
+tools/test-remote.sh
+
+# Files this fork rewrites for Tizen. A sync keeps the fork's version when upstream changes one.
+[keep-ours]
+README.md
+CLAUDE.md
+AGENTS.md
+tools/check.sh
+.github/workflows/check.yml
+tools/tizen-only.txt
+tools/keep-tizen-only.sh
+.github/workflows/sync-upstream.yml
