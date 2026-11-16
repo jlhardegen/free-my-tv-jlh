@@ -943,11 +943,6 @@
         })(sv[j].key, sv[j].name);
       }
     }
-    if (nuvio()) {
-      var open = Prefs.openPicks();
-      rows.push({label: tr('Open picks in'), value: open === 'nuvio' ? 'Nuvio' : tr('Streaming apps'),
-        step: function (d) { cycle('openPicks', ['apps', 'nuvio'], open, d); }});
-    }
     rows.push({label: tr('Live TV button'), value: boxLabel(),
       step: function (d) { cycle('boxInput', ['live', 'hdmi1', 'hdmi2', 'hdmi3', 'hdmi4'], Prefs.boxInput(), d); renderTop(); }});
     rows.push({label: tr('Inputs'), value: '›', inputs: true, step: function (d) { if (d >= 0) openInputsEdit(); }});
@@ -1455,30 +1450,18 @@
 
   // MARK: - Opening things
 
-  /** Nuvio, when the TV has it: picks can open on its page there (Home Settings, Open picks in). LG only for now:
-   *  Samsung's launch passes no data, so Nuvio would open on its Home. */
-  function nuvio() {
-    if (TV.name !== 'webos') return null;
-    for (var i = 0; i < apps.length; i++) if (/nuvio/i.test(apps[i].id) || /^nuvio\b/i.test(apps[i].title)) return apps[i];
-    return null;
-  }
-
   function pickTarget(p) {
-    if (!p) return null;
-    var via = Prefs.openPicks() === 'nuvio' ? nuvio() : null;
-    var app = via || Data.appFor(p.app);
-    if (!app) return null;
-    // Nuvio's own link for the title, as on Android (nuvio://tmdb/movie/603); webOS apps get links as contentTarget.
-    return {app: app, params: via ? {contentTarget: 'nuvio://tmdb/' + (p.kind === 'tv' ? 'series' : 'movie') + '/' + p.id} : null};
+    var app = p && Data.appFor(p.app);
+    return app ? {app: app} : null;
   }
 
   /**
-   * Opens a pick's target: in Nuvio as picked, else its app, on its title where this TV's app takes one and Watchmode
-   * knows it (watchmode_key; on Samsung, Prime Video: TV.takesTitle). LG opens the app as before.
+   * Opens a pick's target: its app, on its title where this TV's app takes one and Watchmode knows it (watchmode_key;
+   * on Samsung, Prime Video: TV.takesTitle).
    */
   function openTarget(p, target) {
     if (!target) return;
-    if (target.params || !p || !TV.takesTitle(p.app)) { launcher(target.app.id, target.app.title, target.params)(); return; }
+    if (!p || !TV.takesTitle(p.app)) { launcher(target.app.id, target.app.title, null)(); return; }
     var mine = p.kind + ':' + p.id;
     if (lookingUp === mine) return;   // OK again while Watchmode answers (up to 4 s): one lookup, one launch
     lookingUp = mine;

@@ -102,7 +102,6 @@ var Prefs = (function () {
       if (off) list.push(key);
       this.set('servicesOff', list);
     },
-    openPicks: function () { return pick('openPicks', CONFIG.openPicksIn === 'nuvio' ? 'nuvio' : 'apps'); },
     /** The input the first top button opens, picked on the TV (Home Settings > Live TV button): 'live' (Live TV)
      * or 'hdmi1'..'hdmi4'. */
     boxInput: function () {
