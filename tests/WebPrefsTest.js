@@ -76,5 +76,11 @@ expect(prefs({}, {homeButton: true}).homeReturns(), true, 'samsung_home_button f
 expect(prefs({homeReturns: false}, {homeButton: true}).homeReturns(), false, 'turned off on the TV');
 expect(prefs({homeReturns: 'yes'}).homeReturns(), false, 'not a boolean');
 
+// No TMDB or Watchmode anywhere in web/: the picks were removed with them (specs/2026-11-18-remove-tmdb-plan.md).
+fs.readdirSync(path.join(__dirname, '..', 'web')).filter(function (f) { return /\.js$/.test(f); }).forEach(function (f) {
+  var src = fs.readFileSync(path.join(__dirname, '..', 'web', f), 'utf8');
+  expect(/api\.tmdb\.org|image\.tmdb\.org|api\.watchmode\.com|tmdbKey|watchmodeKey/.test(src), false, f + ' has no TMDB or Watchmode');
+});
+
 if (failures) process.exit(1);
 console.log('WebPrefsTest: all checks passed.');
