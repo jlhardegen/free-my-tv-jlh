@@ -299,7 +299,7 @@ Rules:
 - A "context" note says where the string appears. Context "format" means the text is a java.text.SimpleDateFormat pattern: give the usual pattern for {name} instead of a translation.
 - Avoid plural agreement with a number placeholder when the language needs several plural forms: use a form that reads right for any number (an abbreviation, or "label: {{n}}").
 - Context "plural" means the text is a count in plural forms, "one:…|other:…": answer with one form per Unicode CLDR plural category {name} uses for whole numbers, joined by "|" and always including "other" (Russian: "one:{{n}} сезон|few:{{n}} сезона|many:{{n}} сезонов|other:{{n}} сезона"; Japanese: "other:{{n}}シーズン").
-- Keep product and brand names (Free My TV, Netflix, YouTube, TMDB, HDMI, Android, Claude Code) as they are.
+- Keep product and brand names (Free My TV, Netflix, YouTube, HDMI, Android, Claude Code) as they are.
 Answer with a JSON object only, mapping each id to its translation."""
 
 

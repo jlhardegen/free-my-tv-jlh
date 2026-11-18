@@ -1,7 +1,7 @@
 """What the Samsung package (tizen/build.py) reads: the settings and the web app's files.
 
 The settings come from config.properties, --generic leaves it out (the GitHub
-release is built that way): no TMDB key, and the TV's time zone picks the city, the currency and the region.
+release is built that way): the TV's time zone picks the city, the currency and the region.
 """
 import json
 import os
@@ -13,8 +13,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, 'tools'))
 import translate  # noqa: E402  (the catalogues and the keys the web app uses)
 
-GENERIC = {'tmdbKey': '', 'tmdbRegion': '', 'latitude': '', 'longitude': '', 'city': '', 'language': 'auto',
-           'currency': '', 'temperature': 'auto', 'theme': 'auto', 'showCrypto': True, 'hideAnimation': False, 'hideApps': [],
+GENERIC = {'latitude': '', 'longitude': '', 'city': '', 'language': 'auto',
+           'currency': '', 'temperature': 'auto', 'theme': 'auto', 'showCrypto': True, 'hideApps': [],
            'shelfApps': [], 'drawerFirst': False, 'clockFormat': 'auto'}
 
 
@@ -31,7 +31,7 @@ def config_from_args(args):
 def read_config(path):
     if not os.path.exists(path):
         shutil.copy(os.path.join(ROOT, 'config.example.properties'), path)
-        print('Created config.properties: add your TMDB key and your city there (optional), then build again.')
+        print('Created config.properties: add your city there (optional), then build again.')
     values = {}
     try:
         with open(path, encoding='utf-8-sig') as f:
@@ -52,8 +52,6 @@ def read_config(path):
         return v
 
     return {
-        'tmdbKey': values.get('tmdb_key', ''),
-        'tmdbRegion': values.get('tmdb_region', 'US') or 'US',
         'latitude': number('latitude', '40.7128'),
         'longitude': number('longitude', '-74.0060'),
         'city': values.get('city', ''),
@@ -62,12 +60,7 @@ def read_config(path):
         'temperature': values.get('temperature', 'auto') or 'auto',
         'theme': values.get('theme', 'auto') or 'auto',
         'showCrypto': values.get('show_crypto', 'true').lower() != 'false',
-        'hideAnimation': values.get('hide_animation', 'false').lower() == 'true',
         'hideApps': [s.strip() for s in values.get('hide_apps', '').split(',') if s.strip()],
-        # Where Home Settings' Picks from switches start, as on Android (Prefs.offServices): netflix, prime, disney...
-        'hideServices': [s.strip().lower() for s in values.get('hide_services', '').split(',') if s.strip()],
-        # Samsung: a pick opens its title's page in its app (Watchmode's free plan: 2,500 requests a month).
-        'watchmodeKey': values.get('watchmode_key', '').strip(),
         'shelfApps': [s.strip() for s in values.get('shelf_apps', '').split(',') if s.strip()],
         'drawerFirst': values.get('drawer_first', 'false').lower() == 'true',
         # Samsung: Home pressed in an app opened from here brings Free My TV back. It changes the package's manifest

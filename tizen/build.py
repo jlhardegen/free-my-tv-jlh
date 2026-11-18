@@ -108,8 +108,6 @@ def build(preview, config, profile):
                                            'signed with "%s"' % profile if profile else 'not signed'))
     if config.get('homeButton'):
         print('With samsung_home_button: the app keeps running behind the apps it opens (Home Settings > Home button).')
-    if not config['tmdbKey']:
-        print('No TMDB key built in: the picks come once one is typed on the TV (Home Settings > TMDB key).')
 
 
 if __name__ == '__main__':

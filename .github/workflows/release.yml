@@ -9,7 +9,7 @@
 #   TIZEN_CERT_PASSWORD   that certificate's password
 #   TIZEN_PROFILE_NAME    optional: the name of the signing profile (default "release")
 #
-# The package is built without config.properties (no TMDB key, the city from the TV's time zone), as the upstream
+# The package is built without config.properties (the city from the TV's time zone), as the upstream
 # releases are. The run fails rather than publish an unsigned package: a 2015-2022 TV refuses one.
 name: Release
 
@@ -94,4 +94,4 @@ jobs:
           gh release create "v$version" FreeMyTV-tizen.wgt \
             --target "$GITHUB_SHA" \
             --title "Free My TV $version (Samsung)" \
-            --notes "Signed Samsung package for TizenBrew Installer and Samsung's Developer Mode. Built without a TMDB key: type yours in Home Settings on the TV."
+            --notes "Signed Samsung package for TizenBrew Installer and Samsung's Developer Mode."

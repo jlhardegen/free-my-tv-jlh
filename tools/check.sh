@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 python3 tools/translate.py --check
 bash tools/test-web.sh
 
-# The generic Samsung package lands where your own build leaves yours (with your city and TMDB key): keep yours and
+# The generic Samsung package lands where your own build leaves yours (with your city): keep yours and
 # put it back afterwards, so the next install isn't the generic one.
 package="FreeMyTV-tizen.wgt"
 kept="$(mktemp -d)"
