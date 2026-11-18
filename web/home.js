@@ -420,7 +420,7 @@
   var st = {zone: Z.SHELF, top: 0, tab: 0, card: 0, shelf: 0, drawer: 0, grid: 0, row: 0, edit: 0, lang: 0, city: 0, key: 0};
   var cards = [];
 
-  function sheetOpen() { return st.zone === Z.APPS || st.zone === Z.SETTINGS || st.zone === Z.EDIT || st.zone === Z.LANG || st.zone === Z.CITY || st.zone === Z.KEY || st.zone === Z.ABOUT; }
+  function sheetOpen() { return st.zone === Z.APPS || st.zone === Z.SETTINGS || st.zone === Z.EDIT || st.zone === Z.LANG || st.zone === Z.CITY || st.zone === Z.ABOUT; }
 
   function updateFocus() {
     var i, list;
@@ -449,7 +449,6 @@
     focusRows($('langpick'), st.lang, st.zone === Z.LANG);
     if (langHint) langHint.textContent = I18N.digits((st.lang + 1) + ' / ' + languageChoices().length) + '  ·  ' + tr('OK picks, Back cancels.');
     focusRows($('citypick'), st.city, st.zone === Z.CITY);
-    focusRows($('keypick'), st.key, st.zone === Z.KEY);
     setClass(body, 'drawer-open', st.zone === Z.DRAWER);
     followSoon();
   }
@@ -874,9 +873,8 @@
     setClass($('langpick'), 'open', false);
     setClass($('about'), 'open', false);
     closeField('citypick');
-    closeField('keypick');
+    closeField('citypick');
     setClass($('citypick'), 'open', false);
-    setClass($('keypick'), 'open', false);
     langHint = null;
     st.zone = Z.SHELF;
     updateFocus();
@@ -928,8 +926,6 @@
           step: function () { if (Prefs.quotes()) { Prefs.setCoin(i, !Prefs.coin(i)); Data.settingsChanged(); } }});
       })(i);
     }
-    rows.push({label: tr('TMDB key'), value: Prefs.tmdbKey().length >= 4 ? '•••• ' + Prefs.tmdbKey().slice(-4) : tr('Not set'), opens: true, tmdb: true,
-      step: function (d) { if (d >= 0) openKey(); }});
     var sv = Data.services();
     if (sv.length) {
       var someOff = false;   // only the services this TV has count
@@ -1049,7 +1045,7 @@
     updateFocus();
   }
 
-  // MARK: - Text fields: typed with the TV's keyboard (the city, the TMDB key)
+  // MARK: - Text fields: typed with the TV's keyboard (the city)
 
   /** A row with a text field; on the TV, the focus in it brings up the keyboard. */
   function textField(holder, zone, value, placeholder, label) {
@@ -1168,128 +1164,6 @@
     if (st.city === 0) openField('citypick');
     else if (st.city === 1) searchCity();
     else closeCities(true);
-  }
-
-  // MARK: - TMDB key: typed on the TV, so builds without one (the releases) get the picks too; TMDB checks it first
-
-  var keyStatus = '', keyWarn = false, keyTimer = 0, keySeq = 0, keyAsking = false;
-
-  function keyRows() { return keyAsking ? 2 : Prefs.tmdbKeyOnTV() ? 3 : 2; }
-
-  function keySteps() {
-    return tr("The key brings the picks: what's trending on your streaming apps, with their photos on the screensaver.") + '\n'
-      + tr('Free, and it takes two minutes:') + '\n' + I18N.digits(1) + '. ' + tr('Create an account at themoviedb.org.')
-      + '\n' + I18N.digits(2) + '. ' + tr('Open Settings → API and request a developer key.');
-  }
-
-  function renderKey() {
-    var box = $('keypick').firstChild, old = fieldOf('keypick'), typed = old ? old.value : '', inField = typingIn('keypick');
-    box.innerHTML = '';
-    el('div', 'title', box, keyAsking ? tr('Remove the TMDB key?') : tr('TMDB key'));
-    var list = el('div', 'list', box), holder = el('div', 'rows', list);
-    list.style.height = keyRows() * 78 + 'px';
-    if (keyAsking) {
-      hover(el('div', 'row', holder, tr('Cancel')), Z.KEY, 0);
-      hover(el('div', 'row', holder, tr('Remove')), Z.KEY, 1);
-      updateFocus();
-      return;
-    }
-    var keyField = textField(holder, Z.KEY, typed, tr('API Read Access Token or API Key'), tr('TMDB key'));
-    // A v3 key is lowercase hex: the TV's keyboard mustn't capitalize it (the city's field wants capitals).
-    keyField.setAttribute('autocapitalize', 'none');
-    keyField.setAttribute('autocorrect', 'off');
-    var save = el('div', 'row', holder, tr('Save'));
-    forward(el('span', 'value', save));
-    hover(save, Z.KEY, 1);
-    if (Prefs.tmdbKeyOnTV()) hover(el('div', 'row', holder, tr('Remove the key')), Z.KEY, 2);
-    if (keyStatus) setClass(el('div', 'hint', box, keyStatus), 'warn', keyWarn);
-    el('div', 'hint steps', box, keySteps());
-    if (inField) openField('keypick');
-    updateFocus();
-  }
-
-  function openKey() {
-    setClass($('settings'), 'open', false);
-    st.zone = Z.KEY;
-    st.key = 0;
-    keyStatus = '';
-    keyAsking = false;
-    $('keypick').firstChild.innerHTML = '';
-    renderKey();
-    setClass($('keypick'), 'open', true);
-    openField('keypick');
-  }
-
-  function setKeyStatus(text, warn) {
-    keyStatus = text;
-    keyWarn = !!warn;
-    clearTimeout(keyTimer);
-    if (text && text !== tr('Checking the key with TMDB…')) keyTimer = setTimeout(function () {
-      keyStatus = '';
-      var line = st.zone === Z.KEY && $('keypick').querySelector('.hint:not(.steps)');
-      if (line) line.parentNode.removeChild(line);
-    }, 6000);
-    if (st.zone === Z.KEY) renderKey();
-  }
-
-  function cleanKey(typed) {
-    var key = typed.replace(/\s+/g, '');
-    return /^[A-Za-z0-9._-]{16,1024}$/.test(key) ? key : '';
-  }
-
-  function saveKey() {
-    var f = fieldOf('keypick'), typed = f ? f.value : '', key = cleanKey(typed);
-    closeField('keypick');
-    if (!typed.replace(/\s+/g, '')) { st.key = 0; openField('keypick'); updateFocus(); return; }
-    if (keyStatus === tr('Checking the key with TMDB…')) return;
-    if (!key) { setKeyStatus(tr("That doesn't look like a TMDB key."), true); return; }
-    setKeyStatus(tr('Checking the key with TMDB…'));
-    var mine = ++keySeq;   // an answer for a sheet already closed is dropped
-    Data.checkKey(key, function (err) {
-      if (mine !== keySeq || st.zone !== Z.KEY) return;
-      if (err) { setKeyStatus(err.rejected ? tr('TMDB refused this key.') : trf("Couldn't reach TMDB: {error}", {error: err.message}), true); return; }
-      Prefs.set('tmdbKey', key);
-      if (fieldOf('keypick')) fieldOf('keypick').value = '';
-      Data.keyChanged();
-      setKeyStatus(tr('Saved. The picks arrive in a moment.'));
-    });
-  }
-
-  /** Back to config.properties' key (none in the releases): the picks go. */
-  function removeKey() {
-    Prefs.set('tmdbKey', undefined);   // left out of the saved settings
-    closeKey();
-    Data.keyChanged();
-  }
-
-  /** Back on the TMDB key row of Home Settings. */
-  function closeKey() {
-    closeField('keypick');
-    setClass($('keypick'), 'open', false);
-    keySeq++;
-    clearTimeout(keyTimer);
-    keyStatus = '';
-    keyAsking = false;
-    var f = fieldOf('keypick');
-    if (f) f.value = '';
-    openSettings();
-    for (var i = 0; i < rowsNow.length; i++) if (rowsNow[i].tmdb) st.row = i;
-    updateFocus();
-  }
-
-  function askRemoveKey(on) {
-    keyAsking = on;
-    keyStatus = '';
-    clearTimeout(keyTimer);
-    st.key = on ? 0 : 2;
-    renderKey();
-  }
-
-  function activateKey() {
-    if (keyAsking) { if (st.key === 1) removeKey(); else askRemoveKey(false); }
-    else if (st.key === 0) openField('keypick');
-    else if (st.key === 1) saveKey();
-    else askRemoveKey(true);
   }
 
   // MARK: - About this TV: what to quote when reporting a problem, without LG's or Samsung's slow menus
@@ -1568,9 +1442,6 @@
       case Z.CITY:
         activateCity();
         return;
-      case Z.KEY:
-        activateKey();
-        return;
       case Z.ABOUT:
         closeAbout();
         return;
@@ -1645,9 +1516,6 @@
       case Z.CITY:
         if (dy) st.city = Math.max(0, Math.min(cityRows() - 1, st.city + dy));
         break;
-      case Z.KEY:
-        if (dy) st.key = Math.max(0, Math.min(keyRows() - 1, st.key + dy));
-        break;
     }
     updateFocus();
   }
@@ -1663,7 +1531,6 @@
     }
     if (st.zone === Z.LANG) { closeLanguages(false); return; }
     if (st.zone === Z.CITY) { closeCities(false); return; }
-    if (st.zone === Z.KEY) { if (keyAsking) askRemoveKey(false); else closeKey(); return; }
     if (st.zone === Z.ABOUT) { closeAbout(); return; }
     if (sheetOpen()) { closeSheets(); return; }
     if (st.zone === Z.DRAWER) { closeDrawer(); return; }
@@ -1674,7 +1541,7 @@
   /** The pointer focuses what it's over (the Magic Remote, or a mouse when previewing). */
   function hover(node, zone, index) {
     node.onmouseover = function () {
-      if (saverOn || (sheetOpen() !== (zone === Z.APPS || zone === Z.SETTINGS || zone === Z.EDIT || zone === Z.LANG || zone === Z.CITY || zone === Z.KEY || zone === Z.ABOUT))) return;
+      if (saverOn || (sheetOpen() !== (zone === Z.APPS || zone === Z.SETTINGS || zone === Z.EDIT || zone === Z.LANG || zone === Z.CITY || zone === Z.ABOUT))) return;
       if (zone === Z.DRAWER && st.zone !== Z.DRAWER) return;
       if (zone !== Z.DRAWER && st.zone === Z.DRAWER && zone !== Z.SHELF) return;
       if (zone === Z.TOP && index < 3 && !Data.hasKey()) return;   // the tabs are hidden without the picks
@@ -1689,7 +1556,6 @@
       else if (zone === Z.EDIT) st.edit = index;
       else if (zone === Z.LANG) st.lang = index;
       else if (zone === Z.CITY) st.city = index;
-      else if (zone === Z.KEY) st.key = index;
       updateFocus();
     };
     node.onclick = function () { node.onmouseover(); activate(); };
@@ -1872,9 +1738,9 @@
    * its Cancel or ↑ ↓ leave the field. Samsung's keyboard sends Done as 65376 and Cancel as 65385. True: handled here.
    */
   function typing(k) {
-    var sheet = st.zone === Z.CITY ? 'citypick' : st.zone === Z.KEY ? 'keypick' : '';
+    var sheet = st.zone === Z.CITY ? 'citypick' : '';
     if (!sheet || !typingIn(sheet)) return false;
-    if (k === TV.keys.ok || k === 65376) { if (st.zone === Z.CITY) searchCity(); else saveKey(); }
+    if (k === TV.keys.ok || k === 65376) searchCity();
     else if (k === TV.keys.back || k === 27 || k === 65385) { closeField(sheet); updateFocus(); }
     else if (k === TV.keys.up || k === TV.keys.down) { closeField(sheet); move(0, k === TV.keys.up ? -1 : 1); }
     return true;   // anything else types into the field
