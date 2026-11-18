@@ -70,5 +70,11 @@ fs.readdirSync(path.join(__dirname, '..', 'web')).filter(function (f) { return /
   expect(/api\.tmdb\.org|image\.tmdb\.org|api\.watchmode\.com|CONFIG\.(tmdb|watchmode)/.test(src), false, f + ' has no TMDB or Watchmode code');
 });
 
+// No crypto prices in web/ either (specs/2026-11-18-remove-crypto-plan.md).
+fs.readdirSync(path.join(__dirname, '..', 'web')).filter(function (f) { return /\.js$/.test(f); }).forEach(function (f) {
+  var src = fs.readFileSync(path.join(__dirname, '..', 'web', f), 'utf8');
+  expect(/Binance|binance|COINS|coins\.js|Prefs\.quotes|Prefs\.coin|refreshPrices|#quotes|renderQuotes|renderPrices/.test(src), false, f + ' has no crypto code');
+});
+
 if (failures) process.exit(1);
 console.log('WebPrefsTest: all checks passed.');
