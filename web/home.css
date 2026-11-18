@@ -1,6 +1,6 @@
 /*
- * The home screen on a 1920 × 1080 stage, with the Android app's measurements (HomeView): the title and tabs at the top
- * left, icon-only glass buttons at the top right, three picks, and the glass shelf at the bottom; ↓ on the shelf opens
+ * The home screen on a 1920 × 1080 stage, with the Android app's measurements (HomeView): the date and the time at the top
+ * left, icon-only glass buttons at the top right, and the glass shelf at the bottom; ↓ on the shelf opens
  * the drawer (inputs, shortcuts, weather, prices). Light by day, dark from sunset to sunrise.
  * No CSS variables, grid or backdrop-filter: older LG TVs (webOS 3 and 4) don't have them, and blur is too heavy for
  * their GPUs. Only transform and opacity animate.
@@ -56,30 +56,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   background-color: currentColor;
 }
 
-/* MARK: - Background: the focused pick's photo, very blurred and almost white (almost black at night). */
-
-#sky { background: #EBEBEF; }
-#sky .grad { position: absolute; left: 0; top: 0; width: 100%; height: 100%; -webkit-transition: opacity 2s; transition: opacity 2s; }
-#sky .day { background: -webkit-linear-gradient(top, #F5F5F7, #E2E2E7); background: linear-gradient(#F5F5F7, #E2E2E7); }
-#sky .night { background: -webkit-linear-gradient(top, #1C1C1E, #0B0B0D); background: linear-gradient(#1C1C1E, #0B0B0D); opacity: 0; }
-#sky canvas { position: absolute; left: -4%; top: -4%; width: 108%; height: 108%; opacity: 0; -webkit-transition: opacity 0.8s; transition: opacity 0.8s; }
-#sky canvas.on { opacity: 1; }
-#sky .veil { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(245, 245, 247, 0.74); -webkit-transition: background-color 2s; transition: background-color 2s; }
-#sky .lift { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #FFF; opacity: 0; -webkit-transition: opacity 0.45s, background-color 2s; transition: opacity 0.45s, background-color 2s; }
-.night #sky .day { opacity: 0; }
-.night #sky .night { opacity: 1; }
-.night #sky .veil { background: rgba(11, 11, 13, 0.78); }
-.night #sky .lift { background: #000; }
-.drawer-open #sky .lift { opacity: 0.32; }
-.night.drawer-open #sky .lift { opacity: 0.42; }
-
 /* MARK: - Moving parts: the top fades and everything rises when the drawer opens. */
 
 /* Each part is its own stack, so a focused tile (z-index) never shows over the drawer, a sheet or the screensaver. */
 #home { z-index: 1; }
 #drawer { z-index: 2; }
 .sheet { z-index: 3; }
-#saver { z-index: 4; }
 
 #home, #drawer {
   -webkit-transition: -webkit-transform 0.38s cubic-bezier(0.32, 0.72, 0.2, 1), opacity 0.28s;
@@ -94,51 +76,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 #drawer { pointer-events: none; }
 .drawer-open #drawer .key { pointer-events: auto; }
 
-/* MARK: - Title and tabs */
+/* MARK: - Top: the buttons and the quotes */
 
-#title {
-  position: absolute;
-  left: 76px;
-  top: 52px;
-  margin: 0;
-  font-size: 76px;
-  font-weight: 600;
-  letter-spacing: 0.004em;
-  line-height: 1;
-  white-space: nowrap;
-  color: #1D1D1F;
-  -webkit-transition: color 2s;
-  transition: color 2s;
-}
-
-#tabs { position: absolute; left: 54px; top: 158px; height: 68px; white-space: nowrap; }
-.tab {
-  position: relative;
-  display: inline-block;
-  height: 68px;
-  padding: 0 26px;
-  margin-right: 4px;
-  border-radius: 34px;
-  font-size: 30px;
-  font-weight: 500;
-  line-height: 68px;
-  color: #6E6E73;
-  -webkit-transition: -webkit-transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2), background-color 0.17s, box-shadow 0.2s, color 0.17s;
-  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2), background-color 0.17s, box-shadow 0.2s, color 0.17s;
-}
-.tab.on { font-weight: 600; color: #1D1D1F; }
-.tab.focus {
-  background: #FFF;
-  color: #1D1D1F;
-  -webkit-transform: scale(1.05);
-  transform: scale(1.05);
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.22);
-}
-.night #title, .night .tab.on { color: #F5F5F7; }
-.night .tab { color: rgba(245, 245, 247, 0.62); }
-.night .tab.focus { color: #1D1D1F; box-shadow: 0 8px 26px rgba(0, 0, 0, 0.4); }
-
-/* Crypto quotes at the right end of the tab row: a quiet detail. */
+/* Crypto quotes at the top, a quiet detail. */
 #quotes {
   position: absolute;
   right: 80px;
@@ -200,109 +140,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .night .round.focus { background: #FFF; color: #1D1D1F; }
 .night .round.focus .tip { color: #F5F5F7; }
 
-/* MARK: - Picks: the card with focus is wide, the others narrow (posters); it grows 5%, rises and its edge lights up. */
-
-#cards {
-  position: absolute;
-  left: 0;
-  top: 0;
-  -webkit-transition: -webkit-transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1);
-  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1);
-}
-
-.card {
-  position: absolute;
-  top: 262px;
-  height: 442px;
-  -webkit-transition: -webkit-transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.15);
-  transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.15);
-}
-.card .img {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 18px;
-  overflow: hidden;
-  background-color: #DADADF;
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
-  -webkit-transition: box-shadow 0.22s;
-  transition: box-shadow 0.22s;
-}
-/* As Backdrop.card(…, 0): taller than the card, a poster keeps its title and the wide card its photo's top. */
-.card .layer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center top;
-}
-.card .back {
-  opacity: 0;
-  -webkit-transition: opacity 0.3s;
-  transition: opacity 0.3s;
-}
-.card.wide .back { opacity: 1; }
-.card .img::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 18px;
-  box-shadow: inset 0 0 0 2.5px rgba(255, 255, 255, 0.85);
-  background: -webkit-linear-gradient(-60deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
-  opacity: 0;
-  -webkit-transition: opacity 0.17s;
-  transition: opacity 0.17s;
-}
-.card.focus { -webkit-transform: translateY(-6px) scale(1.05); transform: translateY(-6px) scale(1.05); z-index: 2; }
-.card.focus .img { box-shadow: 0 24px 46px rgba(0, 0, 0, 0.34); }
-.card.focus .img::after { opacity: 1; }
-.card .name {
-  position: absolute;
-  left: 0;
-  top: 464px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 31px;
-  font-weight: 600;
-  letter-spacing: 0.012em;
-  color: #1D1D1F;
-  -webkit-transition: color 2s;
-  transition: color 2s;
-}
-.card .meta {
-  position: absolute;
-  left: 0;
-  top: 506px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 25px;
-  font-weight: 500;
-  color: #6E6E73;
-  opacity: 0;
-  -webkit-transition: opacity 0.3s;
-  transition: opacity 0.3s;
-}
-.card.wide .meta { opacity: 1; }
-.card.edge .name, .card.edge .meta { visibility: hidden; }
-.night .card .img { background-color: #2C2C2E; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32); }
-.night .card .name { color: #F5F5F7; }
-.night .card .meta { color: rgba(245, 245, 247, 0.62); }
-
-/* Without a TMDB key (or picks yet): the date and the time instead of the cards. */
+/* The date and the time, on the left of the home screen. */
 #clock {
   position: absolute;
   left: 76px;
@@ -312,11 +150,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   letter-spacing: -0.01em;
   line-height: 1;
   color: #1D1D1F;
-  display: none;
+  display: block;
 }
 #clock .date { display: block; font-size: 40px; font-weight: 500; letter-spacing: 0; margin-top: 18px; color: #6E6E73; }
-.no-picks #clock { display: block; }
-.no-key #title, .no-key #tabs { visibility: hidden; }
+
 .night #clock { color: #F5F5F7; }
 .night #clock .date { color: rgba(245, 245, 247, 0.62); }
 
@@ -576,30 +413,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 #ambient .temp { font-size: 118px; font-weight: 200; line-height: 1; -webkit-font-feature-settings: 'tnum'; font-feature-settings: 'tnum'; }
 #ambient .cond { margin-top: 8px; font-size: 30px; font-weight: 500; color: rgba(245, 245, 247, 0.6); }
 
-/* MARK: - Screensaver: the picks' photos, slowly moving, and a clock */
-
-#saver { background: #000; opacity: 0; visibility: hidden; -webkit-transition: opacity 1.2s, visibility 0s 1.2s; transition: opacity 1.2s, visibility 0s 1.2s; }
-#saver.on { opacity: 1; visibility: visible; -webkit-transition-delay: 0s; transition-delay: 0s; }
-#saver .photo { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background-size: cover; background-position: center; opacity: 0; -webkit-transition: opacity 2.4s, -webkit-transform 24s linear; transition: opacity 2.4s, transform 24s linear; }
-#saver .photo.on { opacity: 1; }
-#saver .shade { position: absolute; left: 0; right: 0; bottom: 0; height: 520px; background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.55)); background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.55)); }
-#saver .clock {
-  position: absolute;
-  left: 80px;
-  bottom: 90px;
-  padding: 26px 46px 30px;
-  border-radius: 46px;
-  color: #FFF;
-  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.1));
-  background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.1));
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
-  white-space: nowrap;
-}
-#saver .clock .time { font-size: 150px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; -webkit-font-feature-settings: 'tnum'; font-feature-settings: 'tnum'; }
-#saver .clock .date { margin-top: 10px; font-size: 34px; font-weight: 500; color: rgba(255, 255, 255, 0.82); }
-#saver .clock .title { margin-top: 18px; font-size: 26px; font-weight: 500; color: rgba(255, 255, 255, 0.65); }
-#saver .clock .hint { margin-top: 8px; font-size: 22px; color: rgba(255, 255, 255, 0.55); }
-
 /* MARK: - Toast */
 
 #toast {
@@ -634,49 +447,33 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
    from key to screen along the apps (91 before), 67-93 ms along 10 picks, 60 fps at rest. Only the focused app keeps
    its shadow; a slow zoom on the photo was left out (30 fps even at rest). */
 .layered .tile { will-change: transform; }
-/* The picks' photos are layers of a fixed size (the poster's 320 px, the backdrop's 1040 px) that the card only clips:
-   a card that changes width no longer re-rasterizes its photo at 4K (3.5 s of raster in 6 moves, then 1.2 s). The
-   row slides as one layer; the grey behind the photos and the edge glow went, since they were repainted at each move. */
-.layered #cards { will-change: transform; }
-.layered .card .layer { width: 320px; will-change: transform; }
-.layered .card .back { width: 1040px; }
-.layered .card .img { background-color: transparent; box-shadow: none !important; }
-.layered .card .img::after { display: none; }
+
 .layered .tile { -webkit-transition: -webkit-transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.15) !important; transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.15) !important; }
-.layered .card { -webkit-transition: -webkit-transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.15) !important; transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.15) !important; }
-.layered #cards {
-  -webkit-transition: -webkit-transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
-  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
-}
-.layered .card .back { -webkit-transition: opacity 0.45s !important; transition: opacity 0.45s !important; }
-.layered #sky canvas { -webkit-transition: opacity 0.8s !important; transition: opacity 0.8s !important; }
+
 .layered .tile.focus { box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34) !important; }
 .layered .night .tile.focus { box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6) !important; }
 
 /* Samsungs up to 2 GB (see tv.js): the parts that move lose their soft shadows, which the TV repainted on every frame of
    a move, and what slides is a layer from the start, so a move starts at once. */
-.flat .tab, .flat .card .img, .flat .tile, .flat .key { box-shadow: none !important; }
+.flat .tile, .flat .key { box-shadow: none !important; }
 .flat .cell.focus .face { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4) !important; }
-.flat #home, .flat #drawer, .flat #cards, .flat .card, .flat #tiles, .flat .tile { will-change: transform; }
+.flat #home, .flat #drawer, .flat #tiles, .flat .tile { will-change: transform; }
 .flat #top { will-change: opacity; }
 
 /*
  * MARK: - Right to left (Arabic)
- * home.js puts what it places (shelf, cards, drawer, buttons) at distances from the start edge, which is the right one
+ * home.js puts what it places (shelf, drawer, buttons) at distances from the start edge, which is the right one
  * here; this mirrors the rest. Arabic letters join, so no letter spacing; the font needs Arabic letters, which Inter
  * lacks, so the TV's own Arabic font takes over for them.
  */
-.rtl #cards, .rtl #tiles { width: 1920px; }
+.rtl #tiles { width: 1920px; }
 .rtl * { letter-spacing: 0 !important; }
 body.rtl { font-family: 'Inter', 'Noto Sans Arabic', 'SamsungOne', 'Segoe UI', Tahoma, Arial, sans-serif; }
 
-.rtl #title { left: auto; right: 76px; }
-.rtl #tabs { left: auto; right: 54px; }
-.rtl .tab { margin-right: 0; margin-left: 4px; }
 .rtl #quotes .q { margin-left: 0; margin-right: 24px; }
 .rtl #quotes svg { margin-right: 0; margin-left: 6px; }
 .rtl .round.last .tip { left: -10px; right: auto; margin-left: 0; text-align: left; }
-.rtl .card .name, .rtl .card .meta { left: auto; right: 0; }
+
 .rtl #clock { left: auto; right: 76px; }
 
 .rtl .panel .head { left: auto; right: 34px; }
@@ -699,7 +496,7 @@ body.rtl { font-family: 'Inter', 'Noto Sans Arabic', 'SamsungOne', 'Segoe UI', T
 .rtl .toggle { right: auto; left: 24px; }
 .rtl .toggle::after { left: auto; right: 4px; }
 .rtl .toggle.on::after { -webkit-transform: translateX(-34px); transform: translateX(-34px); }
-.rtl #saver .clock { left: auto; right: 80px; }
+
 .rtl #ambient .clock { left: auto; right: 96px; }
 .rtl #ambient .date { left: auto; right: 108px; }
 .rtl #ambient .side { right: auto; left: 108px; text-align: left; }

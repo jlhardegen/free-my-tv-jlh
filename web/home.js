@@ -1,8 +1,6 @@
 /*
  * The home screen for web-app TVs (LG webOS, Samsung Tizen), with the Android app's design and behavior (HomeView):
- *  - top: the "For You" title and the tabs (Explore, Movies, Shows); icon-only glass buttons at the right (Live TV,
- *    HDMI Inputs, Settings) and the crypto quotes at the end of the tab row;
- *  - three picks for this hour in the selected tab; the background is the focused one's photo, blurred, almost white;
+ *  - top: the "For You" title; icon-only glass buttons at the right (Live TV, HDMI Inputs, Settings), the crypto quotes;
  *  - the glass shelf with the apps; ↓ opens the drawer (inputs, shortcuts, weather, prices); ↑ or Back closes it;
  *  - a night look from sunset to sunrise; a screensaver after a few idle minutes.
  * The remote's arrows, OK and Back move the focus; a pointer (LG's Magic Remote) focuses what it points at.
@@ -416,25 +414,15 @@
 
   // MARK: - Focus
 
-  var Z = {TOP: 'top', CARDS: 'cards', SHELF: 'shelf', DRAWER: 'drawer', APPS: 'apps', SETTINGS: 'settings', EDIT: 'edit', LANG: 'lang', CITY: 'city', KEY: 'key', ABOUT: 'about'};
+  var Z = {TOP: 'top', SHELF: 'shelf', DRAWER: 'drawer', APPS: 'apps', SETTINGS: 'settings', EDIT: 'edit', LANG: 'lang', CITY: 'city', KEY: 'key', ABOUT: 'about'};
   var st = {zone: Z.SHELF, top: 0, tab: 0, card: 0, shelf: 0, drawer: 0, grid: 0, row: 0, edit: 0, lang: 0, city: 0, key: 0};
-  var cards = [];
-
   function sheetOpen() { return st.zone === Z.APPS || st.zone === Z.SETTINGS || st.zone === Z.EDIT || st.zone === Z.LANG || st.zone === Z.CITY || st.zone === Z.ABOUT; }
 
   function updateFocus() {
     var i, list;
-    list = $('tabs').children;
-    for (i = 0; i < list.length; i++) {
-      setClass(list[i], 'on', i === st.tab);
-      setClass(list[i], 'focus', st.zone === Z.TOP && st.top === i);
-    }
     list = $('buttons').children;
     for (i = 0; i < list.length; i++) setClass(list[i], 'focus', st.zone === Z.TOP && st.top === 3 + i);
     setClass($('quotes'), 'hide', st.zone === Z.TOP && st.top >= 3);
-    layoutCards();
-    list = $('cards').children;
-    for (i = 0; i < list.length; i++) setClass(list[i], 'focus', st.zone === Z.CARDS && st.card === i);
     list = $('tiles').children;
     for (i = 0; i < list.length; i++) setClass(list[i], 'focus', st.zone === Z.SHELF && st.shelf === i);
     revealShelf();
@@ -450,7 +438,6 @@
     if (langHint) langHint.textContent = I18N.digits((st.lang + 1) + ' / ' + languageChoices().length) + '  ·  ' + tr('OK picks, Back cancels.');
     focusRows($('citypick'), st.city, st.zone === Z.CITY);
     setClass(body, 'drawer-open', st.zone === Z.DRAWER);
-    followSoon();
   }
 
   function focusRows(sheet, index, on) {
@@ -477,19 +464,9 @@
     return (r.left + r.right) / 2;
   }
 
-  // MARK: - Top: title, tabs, buttons, quotes
-
-  var TAB_KIND = [null, 'movie', 'tv'];
+  // MARK: - Top: title, buttons, quotes
 
   function renderTop() {
-    $('title').textContent = tr('For You');
-    var tabs = $('tabs');
-    tabs.innerHTML = '';
-    var names = [tr('Explore'), tr('Movies'), tr('Shows')];
-    for (var i = 0; i < 3; i++) {
-      var t = el('button', 'tab', tabs, names[i]);
-      hover(t, Z.TOP, i);
-    }
     var buttons = $('buttons');
     buttons.innerHTML = '';
     var own = Prefs.boxInput() !== 'live';
@@ -511,93 +488,6 @@
       coin(coins[i], item);
       el('span', '', item, Data.compact(Data.prices[coins[i]]));
     }
-  }
-
-  // MARK: - Picks and background
-
-  function renderCards() {
-    var list = Data.picks(TAB_KIND[st.tab]);
-    var holder = $('cards');
-    setClass(body, 'no-picks', !list.length);
-    setClass(body, 'no-key', !Data.hasKey());   // as on Android: no title or tabs that could never show anything
-    if (!Data.hasKey() && st.zone === Z.TOP && st.top < 3) st.top = 3;
-    var same = list.length === cards.length;
-    for (var i = 0; same && i < list.length; i++) same = list[i].id === cards[i].id && list[i].backdrop === cards[i].backdrop && list[i].meta === cards[i].meta;
-    if (same && holder.children.length === list.length) return;
-    cards = list;
-    holder.innerHTML = '';
-    for (var c = 0; c < list.length; c++) {
-      var p = list[c], card = el('div', 'card', holder);
-      var img = el('div', 'img', card);
-      // Narrow: the poster (the backdrop cropped without one); the wide card fades its backdrop in over it, loaded then.
-      var poster = el('div', 'layer', img);
-      poster.style.backgroundImage = 'url(' + (p.poster ? Data.image(p.poster, 'w342') : Data.image(p.backdrop, 'w780')) + ')';
-      el('div', 'layer back', img);
-      el('div', 'name', card, I18N.name(p.title));
-      if (p.meta) el('div', 'meta', card, p.meta);
-      hover(card, Z.CARDS, c);
-    }
-    st.card = Math.min(st.card, Math.max(0, list.length - 1));
-    if (!list.length && st.zone === Z.CARDS) st.zone = Z.SHELF;
-    backdrop(list.length ? Data.image(list[st.card].backdrop, 'w300') : '');
-    updateFocus();
-  }
-
-  /**
-   * The card with focus (st.card, also while focus is elsewhere) is the wide one, the others narrow; past the third the
-   * row scrolls a card at a time (the holder slides), and the cards at the edges lose their text. Only the holder's
-   * transform and the backdrop's opacity animate: the widths change at once (older TVs).
-   */
-  function layoutCards() {
-    var holder = $('cards'), nodes = holder.children, left = 80, scroll = Math.max(0, st.card - 2) * 360;
-    for (var i = 0; i < nodes.length; i++) {
-      var wide = i === st.card, w = wide ? 1040 : 320, n = nodes[i], at = left - scroll;
-      startAt(n, left);
-      n.style.width = w + 'px';
-      setClass(n, 'wide', wide);
-      setClass(n, 'edge', at < 0 || at > 1740);
-      if (wide && !n.getAttribute('data-back') && cards[i]) {
-        n.setAttribute('data-back', '1');
-        n.querySelector('.back').style.backgroundImage = 'url(' + Data.image(cards[i].backdrop, 'w1280') + ')';
-      }
-      left += w + 40;
-    }
-    slide(holder, -scroll);
-  }
-
-  var bgUrl = null, bgFront = 'bgA';
-
-  /** The focused pick's photo as the background: drawn tiny and stretched, it's already as soft as a heavy blur. */
-  function backdrop(url) {
-    if (url === bgUrl) return;
-    bgUrl = url;
-    var next = bgFront === 'bgA' ? 'bgB' : 'bgA';
-    if (!url) {
-      setClass($('bgA'), 'on', false);
-      setClass($('bgB'), 'on', false);
-      return;
-    }
-    var img = new Image();
-    img.onload = function () {
-      if (bgUrl !== url) return;
-      var canvas = $(next), ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      setClass(canvas, 'on', true);
-      setClass($(bgFront), 'on', false);
-      bgFront = next;
-    };
-    img.src = url;
-  }
-
-  // As HomeView's bgFollow: the background follows the focused pick.
-  var BG_FOLLOW_MS = 500, bgTimer = 0;
-
-  /** The focused pick's photo as the background once the focus has rested on it: a quick run along the row fades once. */
-  function followSoon() {
-    clearTimeout(bgTimer);
-    bgTimer = setTimeout(function () {
-      if (cards.length) backdrop(Data.image(cards[Math.min(st.card, cards.length - 1)].backdrop, 'w300'));
-    }, BG_FOLLOW_MS);
   }
 
   function renderClock() {
@@ -901,14 +791,6 @@
         }},
       {label: tr('Dim'), value: dimName(),
         step: function (d) { cycle('dim', ['off', 'low', 'medium', 'high', 'auto'], Prefs.dim(), d); applyDim(); }},
-      {label: tr('Screensaver'), value: saverMode() === 'clock' ? tr('Clock') : tr('Photos'),
-        step: function (d) { cycle('saver', ['photos', 'clock'], saverMode(), d); }},
-      {label: tr('Picks per tab'), value: String(I18N.digits(Prefs.cards())),
-        step: function (d) { Prefs.set('cards', 3 + (Prefs.cards() - 3 + (d || 1) + 4) % 4); renderCards(); }},
-      {label: tr('Cartoons and anime'), toggle: !Prefs.hideAnimation(),
-        step: function () { Prefs.set('hideAnimation', !Prefs.hideAnimation()); Data.refresh(); }},
-      {label: tr('Watch from the screensaver'), toggle: Prefs.saverWatch(),
-        step: function () { Prefs.set('saverWatch', !Prefs.saverWatch()); }},
       {label: tr('Weather widget'), toggle: Prefs.weather(),
         step: function () { Prefs.set('weather', !Prefs.weather()); renderPanels(); }},
       {label: tr('City'), value: Prefs.city() || '—', opens: true, city: true,
@@ -925,19 +807,6 @@
         rows.push({label: names[i], toggle: Prefs.quotes() && Prefs.coin(i), dim: !Prefs.quotes(),
           step: function () { if (Prefs.quotes()) { Prefs.setCoin(i, !Prefs.coin(i)); Data.settingsChanged(); } }});
       })(i);
-    }
-    var sv = Data.services();
-    if (sv.length) {
-      var someOff = false;   // only the services this TV has count
-      for (var q = 0; q < sv.length; q++) someOff = someOff || Prefs.serviceOff(sv[q].key);
-      rows.push({label: tr('Picks from'), value: someOff ? tr('services|Some') : tr('services|All'),
-        step: function () { Prefs.set('servicesOff', []); Data.settingsChanged(); }});
-      for (var j = 0; j < sv.length; j++) {
-        (function (key, name) {
-          rows.push({label: name, toggle: !Prefs.serviceOff(key),
-            step: function () { Prefs.setServiceOff(key, !Prefs.serviceOff(key)); Data.refresh(); Data.settingsChanged(); }});
-        })(sv[j].key, sv[j].name);
-      }
     }
     rows.push({label: tr('Live TV button'), value: boxLabel(),
       step: function (d) { cycle('boxInput', ['live', 'hdmi1', 'hdmi2', 'hdmi3', 'hdmi4'], Prefs.boxInput(), d); renderTop(); }});
@@ -1038,7 +907,7 @@
       I18N.set(Prefs.language());
       direction();
       renderAll();
-      Data.refresh();   // the picks' titles and genres come in the new language
+      Data.refresh();
     }
     openSettings();
     for (var i = 0; i < rowsNow.length; i++) if (rowsNow[i].language) st.row = i;
@@ -1324,32 +1193,8 @@
 
   // MARK: - Opening things
 
-  function pickTarget(p) {
-    var app = p && Data.appFor(p.app);
-    return app ? {app: app} : null;
-  }
-
-  /**
-   * Opens a pick's target: its app, on its title where this TV's app takes one and Watchmode knows it (watchmode_key;
-   * on Samsung, Prime Video: TV.takesTitle).
-   */
-  function openTarget(p, target) {
-    if (!target) return;
-    if (!p || !TV.takesTitle(p.app)) { launcher(target.app.id, target.app.title, null)(); return; }
-    var mine = p.kind + ':' + p.id;
-    if (lookingUp === mine) return;   // OK again while Watchmode answers (up to 4 s): one lookup, one launch
-    lookingUp = mine;
-    Data.titleLink(p, function (link) {
-      if (lookingUp !== mine) return;   // something else was opened meanwhile: that one stays in front
-      launcher(target.app.id, target.app.title, link ? {link: link, service: p.app} : null)();
-    });
-  }
-
-  var lookingUp = '';   // the pick whose title Watchmode is being asked for, until something is opened
-
   function launcher(id, name, params) {
     return function () {
-      lookingUp = '';
       TV.launch(id, params || null, function (ok) {
         if (!ok) toast(trf("Couldn't open {app}.", {app: I18N.name(name || id)}));
       });
@@ -1412,13 +1257,9 @@
   function activate() {
     switch (st.zone) {
       case Z.TOP:
-        if (st.top < 3) return;
         if (st.top === 3) { var box2 = boxTV(); if (box2) launcher(box2.id, boxLabel())(); }
         else if (st.top === 4) { st.zone = Z.SHELF; openDrawer(); st.drawer = firstPort(); updateFocus(); }
         else openSettings();
-        return;
-      case Z.CARDS:
-        openTarget(cards[st.card], pickTarget(cards[st.card]));
         return;
       case Z.SHELF:
         if (shelf[st.shelf]) launcher(shelf[st.shelf].id, shelf[st.shelf].title)();
@@ -1448,46 +1289,24 @@
     }
   }
 
-  function selectTab(i) {
-    if (i === st.tab) return;
-    st.tab = i;
-    // A tab opens at its first pick, its row at the start: at once, as on Android, not sliding from the last tab's place.
-    st.card = 0;
-    var holder = $('cards');
-    holder.style.webkitTransition = holder.style.transition = 'none';
-    renderCards();
-    layoutCards();   // renderCards returns early when this tab's picks are the same
-    void holder.offsetWidth;   // the row is laid out where it lands before the slide comes back
-    holder.style.webkitTransition = holder.style.transition = '';
-  }
-
   function move(dx, dy) {
-    var tiles = $('tiles').children, cardNodes = $('cards').children;
+    var tiles = $('tiles').children;
     // Mirrored, the screen's left is the way forward: ← goes to the next one, and in the shelf's and the inputs' editors
     // to a later place (the rows they order run from the right). Settings' values keep their arrows.
-    if (rtl && (st.zone === Z.SHELF || st.zone === Z.CARDS || st.zone === Z.TOP || st.zone === Z.DRAWER || st.zone === Z.APPS || st.zone === Z.EDIT)) dx = -dx;
+    if (rtl && (st.zone === Z.SHELF || st.zone === Z.TOP || st.zone === Z.DRAWER || st.zone === Z.APPS || st.zone === Z.EDIT)) dx = -dx;
     switch (st.zone) {
       case Z.SHELF:
         if (dx) st.shelf = Math.max(0, Math.min(shelf.length - 1, st.shelf + dx));
         else if (dy > 0) { openDrawer(); return; }
         else if (dy < 0) {
-          if (cards.length) { st.zone = Z.CARDS; st.card = nearest(cardNodes, centerX(tiles[st.shelf])); }
-          else { st.zone = Z.TOP; st.top = Data.hasKey() ? st.tab : 3; }
+          st.zone = Z.TOP;
+          st.top = 3;
         }
-        break;
-      case Z.CARDS:
-        if (dx) st.card = Math.max(0, Math.min(cards.length - 1, st.card + dx));
-        else if (dy < 0) { st.zone = Z.TOP; st.top = st.tab; }
-        else if (shelf.length) { st.zone = Z.SHELF; st.shelf = nearest(tiles, centerX(cardNodes[st.card])); }
         break;
       case Z.TOP:
         if (dx) {
-          st.top = Math.max(Data.hasKey() ? 0 : 3, Math.min(5, st.top + dx));   // without the picks the tabs can't hold focus
-          if (st.top < 3) selectTab(st.top);   // as on Apple TV: focusing a tab selects it
-        } else if (dy > 0) {
-          if (cards.length) { st.zone = Z.CARDS; st.card = Math.min(cards.length - 1, st.top < 3 ? 0 : cards.length - 1); }
-          else st.zone = Z.SHELF;
-        }
+          st.top = Math.max(3, Math.min(5, st.top + dx));
+        } else if (dy > 0) st.zone = Z.SHELF;
         break;
       case Z.DRAWER:
         if (dx) st.drawer = Math.max(0, Math.min(drawerItems.length - 1, st.drawer + dx));
@@ -1541,14 +1360,12 @@
   /** The pointer focuses what it's over (the Magic Remote, or a mouse when previewing). */
   function hover(node, zone, index) {
     node.onmouseover = function () {
-      if (saverOn || (sheetOpen() !== (zone === Z.APPS || zone === Z.SETTINGS || zone === Z.EDIT || zone === Z.LANG || zone === Z.CITY || zone === Z.ABOUT))) return;
+      if ((sheetOpen() !==(zone === Z.APPS || zone === Z.SETTINGS || zone === Z.EDIT || zone === Z.LANG || zone === Z.CITY || zone === Z.ABOUT))) return;
       if (zone === Z.DRAWER && st.zone !== Z.DRAWER) return;
       if (zone !== Z.DRAWER && st.zone === Z.DRAWER && zone !== Z.SHELF) return;
-      if (zone === Z.TOP && index < 3 && !Data.hasKey()) return;   // the tabs are hidden without the picks
       if (zone === Z.SHELF && st.zone === Z.DRAWER) closeDrawer();
       st.zone = zone;
-      if (zone === Z.TOP) { st.top = index; if (index < 3) selectTab(index); }
-      else if (zone === Z.CARDS) st.card = index;
+      if (zone === Z.TOP) st.top = index;
       else if (zone === Z.SHELF) st.shelf = index;
       else if (zone === Z.DRAWER) st.drawer = index;
       else if (zone === Z.APPS) st.grid = index;
@@ -1585,10 +1402,7 @@
     try { localStorage.setItem('fmtv.night', night ? 'true' : 'false'); } catch (e) {}   // for index.html, next start
   }
 
-  var saverOn = false, idleAt = Date.now(), saverIndex = 0, saverTimer = 0, saverPick = null, SAVER_AFTER = 5 * 60000;
-
-  /** "photos" (the picks' photos, as it always was) or "clock": what the screen shows when nobody touches it. */
-  function saverMode() { return Prefs.saver(); }
+  var idleAt = Date.now(), SAVER_AFTER = 5 * 60000;
 
   /** Dim, as the person picked it: off, low, medium, high, or automatic (medium from 22:00 to 07:00). */
   function dimName() {
@@ -1607,63 +1421,6 @@
   function applyDim() {
     var level = dimLevel();
     $('dim').className = 'layer' + (level ? ' d' + level : '');
-  }
-
-  /** The screensaver's photos: picks with an app on the TV. */
-  function saverPhotos() {
-    return Data.showcase().filter(function (p) { return p.backdrop && Data.usable(p.app); });
-  }
-
-  function showSaver() {
-    var photos = saverPhotos();
-    saverOn = true;
-    saverPick = null;
-    var s = $('saver');
-    s.innerHTML = '';
-    var a = el('div', 'photo', s), b = el('div', 'photo', s);
-    el('div', 'shade', s);
-    var clock = el('div', 'clock', s);
-    el('div', 'time', clock);
-    el('div', 'date', clock);
-    el('div', 'title', clock);
-    var hint = el('div', 'hint', clock);
-    var front = a;
-    function next() {
-      if (!saverOn) return;
-      var p = photos.length ? photos[saverIndex++ % photos.length] : null;
-      var back = front === a ? b : a;
-      if (p) {
-        back.style.backgroundImage = 'url(' + Data.image(p.backdrop, 'original') + ')';
-        back.style.webkitTransform = back.style.transform = 'scale(1.0)';
-        clock.children[2].textContent = I18N.name(p.title);
-        saverPick = p;
-        // With Watch from the screensaver on, OK opens this title's app (any other key only closes).
-        var target = Prefs.saverWatch() ? pickTarget(p) : null;
-        hint.textContent = target ? trf('Press OK to watch on {app} · any other button to close', {app: I18N.name(target.app.title)}) : '';
-        setTimeout(function () {
-          setClass(back, 'on', true);
-          setClass(front, 'on', false);
-          back.style.webkitTransform = back.style.transform = 'scale(1.08) translateX(-1.5%)';
-          front = back;
-        }, 60);
-      }
-      tickSaverClock(clock);
-      saverTimer = setTimeout(next, 12000);
-    }
-    setClass(s, 'on', true);
-    next();
-  }
-
-  function tickSaverClock(clock) {
-    var d = new Date();
-    clock.firstChild.textContent = formatDate('format|h:mm', d.getTime());
-    clock.children[1].textContent = formatDate('format|EEEE, MMMM d', d.getTime());
-  }
-
-  function hideSaver() {
-    saverOn = false;
-    clearTimeout(saverTimer);
-    setClass($('saver'), 'on', false);
   }
 
   // MARK: - The clock screensaver: a clock, the date and the weather, drifting slowly for OLED panels
@@ -1706,13 +1463,10 @@
     setClass($('ambient'), 'on', false);
   }
 
-  function poke(ok) {
+  function poke() {
     idleAt = Date.now();
-    if (ambientOn) { hideAmbient(); return true; }
-    if (!saverOn) return false;
-    var target = ok && Prefs.saverWatch() ? pickTarget(saverPick) : null, watched = saverPick;
-    hideSaver();
-    openTarget(watched, target);
+    if (!ambientOn) return false;
+    hideAmbient();
     return true;
   }
 
@@ -1720,7 +1474,7 @@
 
   document.addEventListener('keydown', function (e) {
     var k = e.keyCode;
-    if (poke(k === TV.keys.ok)) { e.preventDefault(); return; }   // the first press only wakes the screen (or OK watches)
+    if (poke()) { e.preventDefault(); return; }   // the first press only wakes the screen
     if (typing(k)) return;
     if (k === TV.keys.left) move(-1, 0);
     else if (k === TV.keys.right) move(1, 0);
@@ -1751,8 +1505,6 @@
   function renderAll() {
     renderTop();
     renderQuotes();
-    cards = [];
-    renderCards();
     renderShelf();
     renderDrawer();
     renderClock();
@@ -1784,20 +1536,16 @@
 
   /** Back to the home screen (the app was opened again): the shelf, everything closed, the first tab at its first pick. */
   function reset() {
-    hideSaver();
     hideAmbient();
     closeSheets();
     st.zone = Z.SHELF;
     st.shelf = 0;
-    st.card = 0;
-    selectTab(0);
     updateFocus();
     restInDrawer();   // drawer_first: out again at once, not only after the TV lists its apps
   }
 
   Data.onChange(function () {
     renderQuotes();
-    renderCards();
     renderPanels();
     checkNight();
   });
@@ -1829,7 +1577,6 @@
   document.addEventListener('visibilitychange', function () {
     // Going behind another app or coming back, the screensaver goes: coming back (Back from Netflix, say, which is no
     // relaunch) shows the home screen, never a screensaver that started while the app was out of sight.
-    hideSaver();
     hideAmbient();
     if (document.hidden) return;
     idleAt = Date.now();
@@ -1842,8 +1589,8 @@
   direction();
   I18N.setClock(Prefs.clockFormat());
   checkNight();   // now, from the last forecast: not after the TV lists its apps, with the day look until then
-  // LG's screensaver waits only when ours will show: not under a sheet (ours waits there), and not without photos.
-  TV.holdScreenSaver(function () { return !sheetOpen() && (saverMode() === 'clock' || saverPhotos().length > 0); });
+  // LG's screensaver waits only when ours will show: not under a sheet (ours waits there).
+  TV.holdScreenSaver(function () { return !sheetOpen(); });
   fit();
   renderTop();
   applyDim();
@@ -1859,15 +1606,12 @@
     Data.refresh();
     applyDim();   // automatic: medium from 22:00, off again at 07:00
     // Only on screen: behind another app nobody presses our keys, so idleAt grows old and the screensaver would start
-    // there, turning photos every 12 s for nothing while Netflix or YouTube plays.
-    if (!document.hidden && !saverOn && !ambientOn && !sheetOpen() && Date.now() - idleAt > SAVER_AFTER) {
-      if (saverMode() === 'clock') showAmbient(); else showSaver();
-    }
-    if (saverOn) tickSaverClock($('saver').querySelector('.clock'));
+    // there, the clock would start for nothing while Netflix or YouTube plays.
+    if (!document.hidden && !ambientOn && !sheetOpen() && Date.now() - idleAt > SAVER_AFTER) showAmbient();
     if (ambientOn) tickAmbient();
   }, 30000);
 
   // For the browser preview and tests.
-  window.FreeMyTV = {state: st, move: move, activate: activate, back: back, showSaver: showSaver, hideSaver: hideSaver, toast: toast,
+  window.FreeMyTV = {state: st, move: move, activate: activate, back: back, toast: toast,
     showAmbient: showAmbient, hideAmbient: hideAmbient, applyDim: applyDim};
 })();
