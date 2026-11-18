@@ -11,7 +11,6 @@ Open source. Built with Claude Code. One button to undo.
 
 [**Install**](#install) · [Settings](#settings) · [Make it yours](#make-it-yours)
 
-<img src=".github/preview.webp" width="880" alt="The Free My TV home screen: a glass shelf of apps, and a drawer with the weather and crypto prices">
 
 </div>
 
