@@ -58,6 +58,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* MARK: - Moving parts: the top fades and everything rises when the drawer opens. */
 
+#sky { background: #EBEBEF; }
+#sky .grad { position: absolute; left: 0; top: 0; width: 100%; height: 100%; -webkit-transition: opacity 2s; transition: opacity 2s; }
+#sky .day { background: -webkit-linear-gradient(top, #F5F5F7, #E2E2E7); background: linear-gradient(#F5F5F7, #E2E2E7); }
+#sky .night { background: -webkit-linear-gradient(top, #1C1C1E, #0B0B0D); background: linear-gradient(#1C1C1E, #0B0B0D); opacity: 0; }
+#sky .veil { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(245, 245, 247, 0.74); -webkit-transition: background-color 2s; transition: background-color 2s; }
+#sky .lift { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #FFF; opacity: 0; -webkit-transition: opacity 0.45s, background-color 2s; transition: opacity 0.45s, background-color 2s; }
+.night #sky .day { opacity: 0; }
+.night #sky .night { opacity: 1; }
+.night #sky .veil { background: rgba(11, 11, 13, 0.78); }
+.night #sky .lift { background: #000; }
+.drawer-open #sky .lift { opacity: 0.32; }
+.night.drawer-open #sky .lift { opacity: 0.42; }
+
 /* Each part is its own stack, so a focused tile (z-index) never shows over the drawer, a sheet or the screensaver. */
 #home { z-index: 1; }
 #drawer { z-index: 2; }
