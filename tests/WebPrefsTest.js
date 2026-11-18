@@ -57,19 +57,6 @@ expect(prefs({clockFormat: '12'}, {clockFormat: '24'}).clockFormat(), '12', 'the
 expect(prefs({clockFormat: 'auto'}, {clockFormat: '24'}).clockFormat(), 'auto', 'Automatic picked on the TV');
 expect(prefs({clockFormat: 'noon'}).clockFormat(), 'auto', 'not a clock');
 
-// hide_services is where the Picks from switches start; a switch changed on the TV wins from then on.
-var hide = {hideServices: ['netflix', 'appletv']};
-expect(prefs({}).serviceOff('netflix'), false, 'every service on without hide_services');
-expect(prefs({}, hide).serviceOff('netflix'), true, 'hide_services until switched on the TV');
-expect(prefs({}, hide).serviceOff('prime'), false, 'a service hide_services leaves alone');
-expect(prefs({servicesOff: []}, hide).serviceOff('netflix'), false, 'all switched on on the TV wins');
-expect(prefs({servicesOff: ['prime']}, hide).serviceOff('appletv'), false, 'the list kept on the TV wins');
-expect(prefs({servicesOff: ['prime']}, hide).serviceOff('prime'), true, 'switched off on the TV');
-var switched = prefs({}, hide);
-switched.setServiceOff('netflix', false);
-expect(switched.serviceOff('netflix'), false, 'switched on on the TV');
-expect(switched.serviceOff('appletv'), true, 'the rest of hide_services stays off');
-expect(hide.hideServices.length, 2, 'the build\'s list is not changed');
 // Samsung's Home button row: on in a build made with samsung_home_button, until turned off on the TV.
 expect(prefs({}).homeReturns(), false, 'Home stays with the TV');
 expect(prefs({}, {homeButton: true}).homeReturns(), true, 'samsung_home_button from the build');
@@ -79,7 +66,8 @@ expect(prefs({homeReturns: 'yes'}).homeReturns(), false, 'not a boolean');
 // No TMDB or Watchmode anywhere in web/: the picks were removed with them (specs/2026-11-18-remove-tmdb-plan.md).
 fs.readdirSync(path.join(__dirname, '..', 'web')).filter(function (f) { return /\.js$/.test(f); }).forEach(function (f) {
   var src = fs.readFileSync(path.join(__dirname, '..', 'web', f), 'utf8');
-  expect(/api\.tmdb\.org|image\.tmdb\.org|api\.watchmode\.com|tmdbKey|watchmodeKey/.test(src), false, f + ' has no TMDB or Watchmode');
+  // The one-time cleanup of the saved key (data.js: delete v.tmdbKey) stays; the code that used it does not.
+  expect(/api\.tmdb\.org|image\.tmdb\.org|api\.watchmode\.com|CONFIG\.(tmdb|watchmode)/.test(src), false, f + ' has no TMDB or Watchmode code');
 });
 
 if (failures) process.exit(1);

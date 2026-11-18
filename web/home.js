@@ -1525,7 +1525,6 @@
     TV.returnHome(Prefs.homeReturns());
     TV.apps(function (list) {
       apps = list.filter(function (a) { return !hidden(a); });
-      Data.setApps(apps);
       pickShelf();
       TV.inputs(function (list2) {
         inputs = list2;

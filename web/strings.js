@@ -307,8 +307,6 @@ var I18N = (function () {
     get lang() { return lang; },
     /** True for a language written right to left. */
     get rtl() { return RTL[base(lang)] === true; },
-    /** The language without its country, as TMDB names it ("zh" for "zh-CN"). */
-    get base() { return base(lang); },
     /** BCP 47 tag for dates and numbers (Arabic's carries its calendar and digits: "-u-ca-gregory-nu-arab"). */
     locale: function () { return locale; },
     languages: languages,
