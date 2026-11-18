@@ -17,10 +17,6 @@ before you do it, and let them do the taps on the TV.
 ## Always
 
 - Never commit `config.properties`, `*.keystore`, a Tizen or Samsung certificate, a certificate's password or any key.
-- The TMDB key and the optional Watchmode key are theirs and secret. They create one (free: themoviedb.org → Settings →
-  API; watchmode.com) and paste it after `tmdb_key=` in `config.properties` themselves, or type it on the TV in
-  *Home Settings*. Don't ask for it in the chat, never print it, never commit it. If they paste it in the chat anyway,
-  put it only in `config.properties`. Without a key everything works except the picks.
 - Don't change the TV's picture, sound, network or account settings. The app changes only its own screens.
 - Samsung's home screen stays where it is. The way back is to uninstall the app.
 - Tell them what the app does on their TV before they install or switch anything.
@@ -32,9 +28,9 @@ Developer Mode; Samsung's home screen stays. Two ways:
 
 - **The release, no tools:** TizenBrew Installer (github.com/reisxd/TizenBrewInstaller) installs the latest GitHub
   release when they type `simbasjungles/free-my-tv`, and on 2023+ TVs signs it with their Samsung account. That build
-  has no TMDB key built in (they type theirs in *Home Settings* → *TMDB key*) and takes the city from the TV's time
+  takes the city from the TV's time
   zone. Walk them through the README's steps.
-- **Their own build** (their city, their TMDB key), below.
+- **Their own build** (their city), below.
 
 1. **Ask** for the TV's IP address and their city, if they didn't say.
 2. **On the TV** (they do it): *Apps* → type `1 2 3 4 5` on the remote → *Developer mode* on, *Host PC IP* = this
@@ -53,7 +49,7 @@ Developer Mode; Samsung's home screen stays. Two ways:
    Manager does it. 2015-2022 TVs take a Tizen certificate (`tizen certificate`, then `tizen security-profiles add`
    and `tizen cli-config "profiles.path=<home>/tizen-studio-data/profile/profiles.xml"`; on macOS the passwords go to
    the login Keychain). Certificate passwords are theirs: they type them in their own terminal, never in the chat. On Linux those passwords live in the GNOME keyring: `tizen package` reads them by running `secret-tool`, which a headless shell (a WSL install, a container) has not, and `security-profiles add` writes no `.pwd` file, so signing stops at `CertificationException: Invaild password` even though `keytool` opens the `.p12` with that same password. Leaving the profile item's `password=""` makes the CLI ask instead, and answering that prompt (a pseudo-terminal, not a pipe: without a console it throws a NullPointerException) signs it.
-5. **Settings:** the same `config.properties`; the TMDB key rules above apply.
+5. **Settings:** the same `config.properties`.
 6. **Build and sign:** `python3 tizen/build.py --sign <profile>` must end with `Built FreeMyTV-tizen.wgt (...,
    signed with "<profile>")`.
 7. **Install:** `python3 tizen/install.py <IP>`: it pushes the app over SDB (port 26101), installs it with the TV's
@@ -90,7 +86,7 @@ Developer Mode; Samsung's home screen stays. Two ways:
    reopens it when the TV comes on worked on a 2019 RU7099 and a 2020 Q80T (a fork's opt-in build, #356), but only
    signed with a Partner-level distributor certificate bound to that TV's DUID, which the person requests from Samsung
    with their own account (Samsung decides who gets that level): the release and TizenBrew's builds can't carry it,
-   a build with another author certificate means uninstalling first (Home Settings and the TMDB key go with it), and
+   a build with another author certificate means uninstalling first (Home Settings goes with it), and
    certificates, their passwords and the DUID never go in the chat.
    *Home button* (`samsung_home_button=true` in their own build, then Home Settings, `Prefs.homeReturns`;
    `TV.canReturnHome`, not Tizen 2) brings Free My TV back when Home is pressed in an app opened from it: no app may
@@ -118,7 +114,7 @@ TizenBrew Installer takes the first `.wgt` of the latest GitHub release, so ever
 built with `python3 tizen/build.py --generic` (no `config.properties`: no key, the city from the time zone) and signed
 with a Tizen certificate (`--sign`), which 2017-2022 TVs install as it is; on 2023+ TVs the installer signs it again
 with the person's Samsung certificate. Sign every release with the same author certificate: older TVs refuse an update
-signed by another, and a build with another certificate means uninstalling first (Home Settings and the TMDB key go with it).
+signed by another, and a build with another certificate means uninstalling first (Home Settings goes with it).
 
 ## The code
 
@@ -156,11 +152,7 @@ and the web app's files for it.
   `tizen.tvchannel`, the `tv.channel` privilege): the last antenna channel seen when the home screen comes back
   (`noteChannel`, `fmtv.channel`), else the first one (a 2023 QN55Q60C, Tizen 9.0, went to TV Plus before; the one TV it
   was tried on). Samsung took `tizen.tvchannel` out of its API reference in 2019 (it was public, since Tizen 2.3): where
-  it's missing, refuses, or a list or the tuner doesn't answer in 2.5 s, the viewer opens as before. With a
-  `watchmode_key`, a Prime Video pick opens its title (`TV.takesTitle`, `samsungDeepLink`: the `eden_resume` operation
-  with `{"values": "<GTI>"}` under PAYLOAD, the GTI from Watchmode's web address, #483). Disney+ (Tizen 9: the entity id,
-  the address, eden_resume or view, running or not), Netflix and HBO Max open at home, so only Prime is looked up, and
-  only when a pick is opened (`Data.titleLink`).
+  it's missing, refuses, or a list or the tuner doesn't answer in 2.5 s, the viewer opens as before.
 - Samsung's own app data is unreliable: on Tizen 3 no app's `iconPath` loads (on Tizen 4 and 5, YouTube's and Prime
   Video's are a placeholder), so logos are bundled in `web/icons/` and keyed by app id in `SAMSUNG_ICONS` (SVGs need a
   width and height for old WebKit); some names are empty or long (`SAMSUNG_TITLES`); Tizen 3 answers no "settings" app
