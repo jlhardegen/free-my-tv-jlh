@@ -1513,7 +1513,7 @@
     updateFocus();
   }
 
-  /** hide_apps in config.properties: left out of the shelf, All Apps and the picks, by id or name (part of it). */
+  /** hide_apps in config.properties: left out of the shelf and All Apps, by id or name (part of it). */
   var HIDE = (CONFIG.hideApps || []).map(function (s) { return s.toLowerCase(); });
   function hidden(app) {
     var id = (app.id || '').toLowerCase(), title = (app.title || '').toLowerCase();
