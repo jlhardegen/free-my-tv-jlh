@@ -1,8 +1,8 @@
 /*
  * What the home screen shows, kept in localStorage so it opens with numbers:
- *  - weather, sunrise and sunset (Open-Meteo, every 30 min) and optional crypto prices (Binance, every 5 min).
+ *  - weather, sunrise and sunset (Open-Meteo, every 30 min) and the air quality (every 30 min).
  * Settings changed on the TV (Prefs) win over config.properties, as on Android. Built without a city (--generic), the
- * TV's time zone gives the city, and its country the currency and the region (zones.js).
+ * TV's time zone gives the city and the region (zones.js).
  */
 var CONFIG = window.CONFIG || {};
 
@@ -30,7 +30,6 @@ I18N.dateNames = function (kind) {
 
 var Place = (function () {
   'use strict';
-  var EURO = /^(AT|BE|BG|CY|DE|EE|ES|FI|FR|GR|HR|IE|IT|LT|LU|LV|MT|NL|PT|SI|SK)$/;
 
   /** A time zone's main city: {country, lat, lon, name}, or null. */
   function zone(name) {
@@ -42,13 +41,10 @@ var Place = (function () {
   }
 
   var tz = zone(TV.zone()), set = CONFIG.latitude !== '' && CONFIG.latitude !== undefined;
-  var country = ((tz ? tz.country : '') || 'US').toUpperCase();
   return {
     lat: set ? CONFIG.latitude : tz ? tz.lat : '40.7128',
     lon: set ? CONFIG.longitude : tz ? tz.lon : '-74.0060',
     city: CONFIG.city || (!set && tz ? tz.name : ''),
-    country: country,
-    currency: (CONFIG.currency || (country === 'BR' ? 'BRL' : EURO.test(country) ? 'EUR' : 'USD')).toUpperCase(),
     /** Fahrenheit for TVs in the US (by their time zone, or their language when it doesn't tell). */
     fahrenheit: tz ? tz.country === 'US' : /-US$/i.test(navigator.language || '')
   };
@@ -72,8 +68,6 @@ var Prefs = (function () {
     dim: function () { return pick('dim', 'off'); },
     /** The weather card's forecast: 'hours' (the next 6 hours) or 'days' (the next 5 days). */
     forecast: function () { return pick('forecast', 'hours') === 'days' ? 'days' : 'hours'; },
-    quotes: function () { return pick('quotes', CONFIG.showCrypto !== false); },
-    coin: function (i) { var c = pick('coins', null); return c ? c[i] !== false : true; },
     shelf: function () { return pick('shelf', null); },
     /** The shelf_apps of the build that last set the shelf, so a new one wins once over the TV's choice. */
     shelfConfig: function () { return pick('shelfConfig', ''); },
@@ -108,12 +102,7 @@ var Prefs = (function () {
       var c = String(pick('clockFormat', CONFIG.clockFormat));
       return c === '24' || c === '12' ? c : 'auto';
     },
-    set: function (name, value) { v[name] = value; save(); this.version++; },
-    setCoin: function (i, on) {
-      var c = (pick('coins', null) || [true, true, true, true]).slice();
-      c[i] = on;
-      this.set('coins', c);
-    }
+    set: function (name, value) { v[name] = value; save(); this.version++; }
   };
 })();
 
@@ -123,6 +112,7 @@ var Data = (function () {
   function store(key, value) { try { localStorage.setItem('fmtv.' + key, JSON.stringify(value)); } catch (e) {} }
   function stored(key) { try { return JSON.parse(localStorage.getItem('fmtv.' + key)); } catch (e) { return null; } }
   try { localStorage.removeItem('fmtv.recs'); localStorage.removeItem('fmtv.wm'); } catch (e) {}   // the picks' leftovers
+  try { localStorage.removeItem('fmtv.prices'); localStorage.removeItem('fmtv.dollarsFor'); localStorage.removeItem('fmtv.fxFor'); } catch (e) {}   // the crypto prices' leftovers
 
   /** GET a JSON document; done(error, json). */
   function get(url, headers, done) {
@@ -305,140 +295,10 @@ var Data = (function () {
     });
   }
 
-  // MARK: - Prices
-
-  var COINS = ['BTC', 'ETH', 'SOL', 'USDT'];
-  var CURRENCY = Place.currency;
-  /** A currency Binance lists no pairs in (COP, MXN...): the coins come in USDT and convert with USDT<currency>. */
-  var FX = 'USDT' + CURRENCY, inFx = false;
-  var QUOTE = CURRENCY === 'USD' ? 'USDT' : CURRENCY;
-  /** Binance refuses the whole request when it has no pairs in the currency (INR...): the prices go in dollars then. */
-  function inDollars() {
-    store('dollarsFor', CURRENCY);
-    CURRENCY = 'USD';
-    QUOTE = 'USDT';
-    inFx = false;   // dollars, not USDT converted: no USDT<currency> in the request any more
-  }
-  /** No direct pairs: USDT first, dollars only when Binance lists no USDT<currency> pair either. */
-  function fromUsdt() {
-    inFx = true;
-    QUOTE = 'USDT';
-  }
-  /** A pair with no trade for a day: Binance halted it and keeps answering with the frozen last price (AUD since 2026-10-06). */
-  function halted(list) {
-    for (var i = 0; list && i < list.length; i++) if (list[i].closeTime > 0 && Date.now() - list[i].closeTime > 864e5) return true;
-    return false;
-  }
-  if (stored('dollarsFor') === CURRENCY && CURRENCY !== 'USD') {
-    CURRENCY = 'USD';
-    QUOTE = 'USDT';
-  } else if (stored('fxFor') === CURRENCY && CURRENCY !== 'USD') {
-    fromUsdt();
-  }
-  var prices = [NaN, NaN, NaN, NaN], changes = [NaN, NaN, NaN, NaN], pricesAt = 0, fetchingPrices = false;
-
-  /** The dollar card shows the USDT rate when there is one to show (reais, or a currency converted from USDT). */
-  function dollarRow() {
-    return CURRENCY !== 'USD' && (CURRENCY === 'BRL' || inFx);
-  }
-
-  /** Indexes in COINS of the coins that are on (and the dollar where there's a rate for it). */
-  function activeCoins() {
-    var out = [];
-    if (!Prefs.quotes()) return out;
-    for (var i = 0; i < COINS.length; i++) if (Prefs.coin(i) && (i < 3 || dollarRow())) out.push(i);
-    return out;
-  }
-
-  function parsePrices(list) {
-    var found = 0, fx = NaN, fxOpen = NaN, got = [false, false, false, false];
-    for (var i = 0; list && i < list.length; i++) {
-      if (inFx && list[i].symbol === FX) {
-        fx = parseFloat(list[i].lastPrice);
-        fxOpen = parseFloat(list[i].openPrice);
-        continue;
-      }
-      for (var k = 0; k < COINS.length; k++) {
-        if (list[i].symbol !== COINS[k] + QUOTE) continue;
-        found++;
-        var last = parseFloat(list[i].lastPrice), open = parseFloat(list[i].openPrice);
-        prices[k] = last;
-        changes[k] = open > 0 ? (last - open) / open * 100 : NaN;
-        got[k] = true;
-      }
-    }
-    if (inFx) {
-      if (!(fx > 0)) return 0;   // no rate in the answer: as for any answer without prices
-      for (var c = 0; c < 3; c++) if (got[c]) prices[c] *= fx;
-      prices[3] = fx;
-      changes[3] = fxOpen > 0 ? (fx - fxOpen) / fxOpen * 100 : NaN;
-      return found + 1;
-    }
-    return found;
-  }
-
-  (function () {
-    var p = stored('prices');
-    if (p && p.quote === (inFx ? FX : QUOTE) && parsePrices(p.body)) pricesAt = p.at;
-  })();
-
-  function refreshPrices() {
-    var coins = activeCoins(), now = Date.now(), symbols = [];
-    if (!coins.length || fetchingPrices || (now - pricesAt < 5 * 60000 && now >= pricesAt)) return;
-    fetchingPrices = true;
-    for (var i = 0; i < coins.length; i++) if (!(inFx && coins[i] === 3)) symbols.push('%22' + COINS[coins[i]] + QUOTE + '%22');
-    if (inFx) symbols.push('%22' + FX + '%22');
-    var path = '/api/v3/ticker/24hr?type=MINI&symbols=%5B' + symbols.join(',') + '%5D';
-    // Binance.com refuses the US (HTTP 451); Binance.US answers the same call in dollars. data-api.binance.vision is
-    // Binance's own address for public market data, with Binance.com's pairs on another domain and certificate chain:
-    // it answers where a network blocks or intercepts api.binance.com (#375). A refusal skips it.
-    var hosts = ['https://api.binance.com', 'https://data-api.binance.vision', 'https://api.binance.us'];
-    (function next(h, refused) {
-      get(hosts[h] + path, {}, function (err, body) {
-        // A pair Binance doesn't list (HTTP 400): direct pairs, then USDT converted, then dollars, and no further: a
-        // 400 in dollars stops here. Binance.US has only dollar pairs: its 400 counts only where Binance.com refuses
-        // the US (HTTP 451), not after a timeout or a 5xx there.
-        if (err && err.message === 'HTTP 400' && (inFx || QUOTE !== 'USDT') && (h < 2 || refused)) {
-          fetchingPrices = false;
-          if (inFx) inDollars(); else fromUsdt();
-          refreshPrices();
-          return;
-        }
-        // Halted: dollars for this run, not saved like the 400's (the market may open again).
-        if (!err && !inFx && QUOTE !== 'USDT' && halted(body)) { fetchingPrices = false; CURRENCY = 'USD'; QUOTE = 'USDT'; refreshPrices(); return; }
-        if (err || !parsePrices(body)) {
-          var refusal = !!err && err.message === 'HTTP 451';
-          if (h + 1 < hosts.length && !(err && err.message === 'HTTP 400')) next(refusal ? 2 : h + 1, refused || refusal);
-          else fetchingPrices = false;
-          return;
-        }
-        fetchingPrices = false;
-        pricesAt = Date.now();
-        store('prices', {quote: inFx ? FX : QUOTE, body: body, at: pricesAt});
-        if (inFx) store('fxFor', CURRENCY);
-        changed();
-      });
-    })(0);
-  }
-
-  // MARK: - Formatting
-
-  function fmt(v, digits) {
-    // Old WebKit (Tizen 2) has no Intl: toLocaleString ignores its options and prints every digit, without failing.
-    // English separators there; a per-language table if someone asks.
-    if (typeof Intl === 'undefined') return I18N.digits(v.toFixed(digits).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
-    try { return v.toLocaleString(I18N.locale(), {minimumFractionDigits: digits, maximumFractionDigits: digits}); } catch (e) { return I18N.digits(v.toFixed(digits)); }
-  }
-
-  var SYMBOLS = {USD: '$', BRL: 'R$ ', EUR: '€', GBP: '£', JPY: '¥'};
-
   return {
-    COINS: COINS,
     get city() { return Prefs.city(); },
-    currency: CURRENCY,
     onChange: function (fn) { listeners.push(fn); },
-    refresh: function () { refreshWeather(); refreshAir(); refreshPrices(); },
-    settingsChanged: function () { pricesAt = 0; refreshPrices(); changed(); },
+    refresh: function () { refreshWeather(); refreshAir(); },
     findCity: findCity,
     /** Another city picked: its weather now (none shown until it comes). */
     cityChanged: function () { weather = null; weatherAt = 0; air = null; airAt = 0; airTried = 0; refreshWeather(); refreshAir(); changed(); },
@@ -446,10 +306,6 @@ var Data = (function () {
     get air() { return air; },
     rainIn: rainIn,
     get weatherAt() { return weatherAt; },
-    prices: prices,
-    changes: changes,
-    get pricesAt() { return pricesAt; },
-    activeCoins: activeCoins,
 
     /** Night at the location: from sunset to sunrise (the last forecast; without one, 6:00 and 18:00). */
     isNight: function (at) {
@@ -462,20 +318,6 @@ var Data = (function () {
       return mins < rise || mins >= set;
     },
 
-    compact: function (v) {
-      if (isNaN(v)) return '—';
-      if (v >= 1000000) return fmt(v / 1000000, 2) + 'M';
-      if (v >= 10000) return fmt(v / 1000, 1) + 'k';
-      if (v >= 1000) return fmt(v / 1000, 2) + 'k';
-      if (v >= 100) return fmt(v, 0);
-      return fmt(v, 2);
-    },
-    money: function (v) {
-      var s = SYMBOLS[CURRENCY] || CURRENCY + ' ';
-      if (isNaN(v)) return s + '—';
-      return s + (v >= 1000 ? fmt(v, 0) : fmt(v, 2));
-    },
-    change: function (v) { return isNaN(v) ? '' : (v >= 0 ? '+' : '−') + fmt(Math.abs(v), 1) + '%'; },
     degrees: function (v) {
       if (v === undefined || v === null || isNaN(v)) return '—';
       var unit = Prefs.temperature();
@@ -491,14 +333,6 @@ var Data = (function () {
     },
     /** "5:21 AM", "05:21": the clock, sunrise and sunset. */
     time: function (at) { return formatDate('format|h:mm a', at); },
-    /** "12 min ago" when the data is old (no internet), or empty. */
-    staleness: function (at, every) {
-      if (!at) return '';
-      var age = Date.now() - at;
-      if (age < every * 2) return '';
-      var m = Math.floor(age / 60000), h = Math.floor(m / 60);
-      return m < 60 ? trf('{n} min ago', {n: m}) : trf('{n} h ago', {n: h});
-    },
     condition: function (code, day) {
       if (code === undefined || code === null || code < 0) return '';
       if (code === 0) return day ? tr('Clear') : tr('night|Clear');
@@ -520,7 +354,6 @@ var Data = (function () {
       if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snowflake';
       if (code >= 95) return 'thunderstorm';
       return 'rainy';
-    },
-    coinName: function (i) { return i === 3 ? tr('Dollar') : ['Bitcoin', 'Ethereum', 'Solana'][i]; }
+    }
   };
 })();
