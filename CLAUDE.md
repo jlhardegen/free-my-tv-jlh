@@ -161,8 +161,7 @@ and the web app's files for it.
 - `web/home.js` draws the home screen. Text: the catalogues in `app/assets/i18n/` (the web app's keys only, packed into
   `i18n.js` by `tools/webapp.py`): `tr('Live TV')`, `trf('{n} min ago', {n: 12})`, `plural('plural|…', n)` and
   `formatDate('format|h:mm a', at)` (the catalogue's SimpleDateFormat pattern, written by `web/strings.js`). The
-  catalogue's coin logos come from `app/res/drawable/coin_*.xml`, and the symbols and fonts from `app/assets/`; those
-  are the only files kept from the Android app's folder, because the Samsung build reads them. `tools/translate.py`
+  symbols and fonts come from `app/assets/`; those are the only files kept from the Android app's folder, because the Samsung build reads them. `tools/translate.py`
   reads the web app's calls. Built without a city (`--generic`), `web/zones.js` (`tools/make_zones.py`, from the tz
-  database) turns the TV's time zone into the city, the currency and the region.
+  database) turns the TV's time zone into the city and the region.
 - Preview: `python3 tizen/build.py --preview`, then open `out/tizen/index.html` in a browser (a stand-in lists sample apps).

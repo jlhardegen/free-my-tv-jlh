@@ -21,12 +21,12 @@ of [Free My TV](https://github.com/simbasjungles/free-my-tv). Everything for oth
 
 - **No ads.** No sponsored rows, banners or autoplaying promos. Not one.
 - **Your apps, front and center.** The streaming apps you actually use, on a glass shelf. Pick them and their order right on the TV.
-- **Weather and markets, one press away.** The hour-by-hour forecast (or the next 5 days), sunrise and sunset, live crypto prices, rain in the next two hours, the UV index and the air quality.
+- **Weather, one press away.** The hour-by-hour forecast (or the next 5 days), sunrise and sunset, rain in the next two hours, the UV index and the air quality.
 - **Live TV or your box on HDMI, one press away.** *Home Settings* → *Live TV button* picks what the first top button opens: Live TV, as before, or one of the TV's HDMI inputs. *Home Settings* → *Inputs* picks which inputs the drawer shows, and in what order: OK shows or hides one, ← → moves it, so a TV with no antenna can take its tile out.
 - **Light by day, dark by night.** It follows your city's real sunset, the way your phone does.
 - **Dimming for a dark room.** *Home Settings* → *Dim* darkens Free My TV's own screens, not the apps you open: low, medium, high, or automatic (medium from 22:00 to 07:00). Off until you pick it.
 - **A screensaver to match.** A large glass clock with the weather, drifting slowly so it doesn't burn into OLED screens.
-- **Set up on the TV.** Language, your city, temperature, theme, the weather and prices cards, the forecast's hours or days, which coins, and the apps on the shelf, in Free My TV's own settings.
+- **Set up on the TV.** Language, your city, temperature, theme, the weather card, the forecast's hours or days, and the apps on the shelf, in Free My TV's own settings.
 - **Safe.** No root. Nothing on the TV is changed beyond the app itself. Samsung's home screen stays where it is.
 
 ## Install
@@ -75,13 +75,11 @@ The first values come from `config.properties`, created by the first build. Most
 | `latitude`, `longitude` | Your city, for the weather and the sunset | New York |
 | `city` | The name on the weather card | `Weather` |
 | `language` | `auto` (follows the TV), or a language with a [translation](#translations) (`en`, `pt`, `es`, `de`, `ru`, `fr`, `ja`…) | `auto` |
-| `show_crypto` | Show Binance crypto prices on the home screen | `true` |
-| `currency` | Crypto prices in `USD`, `EUR`, `BRL`… | `USD` |
 | `temperature` | `C`, `F` or `auto` | `auto` |
 | `theme` | `auto` (dark from sunset to sunrise), `light` or `dark` | `auto` |
 | `hide_apps` | Apps to leave out of the shelf, All Apps, by id or name (part of it), comma separated; for apps the TV ships that can't be uninstalled, like Samsung's built-in Netflix | empty |
 | `shelf_apps` | The shelf's apps in this order, by id or name (part of it), comma separated; changing it wins once over the shelf picked on the TV. A whole app id also brings an app the TV leaves out of its list, like one installed in Developer Mode | empty |
-| `drawer_first` | `true` opens the home screen with the drawer already out (apps in the middle, inputs, weather and prices below), so nothing has to be scrolled to reach the inputs; Back closes it to the full page. | `false` |
+| `drawer_first` | `true` opens the home screen with the drawer already out (apps in the middle, inputs and weather below), so nothing has to be scrolled to reach the inputs; Back closes it to the full page. | `false` |
 | `samsung_home_button` | `true` brings Free My TV back when you press Home in an app you opened from it: Smart Hub shows for a moment, then Free My TV (Home in Free My TV itself still opens Smart Hub). Free My TV then keeps running behind that app and asks the TV, a few times a second and only on the TV itself, whether it still shows; anything else that takes the screen from it (another input, an app opened by voice or from your phone) brings Free My TV back too. *Home Settings* → *Home button* turns it off on the TV. Tizen 3 and newer (tried on one 2023 Tizen 9 TV): it changes the app's manifest, so the release doesn't carry it yet | `false` |
 
 Changed something? Run `python3 tizen/build.py` and install again. Keep your Tizen certificate: updates are signed with it.
@@ -100,7 +98,6 @@ Samsung's home screen was never changed. To remove Free My TV, uninstall it from
 It's your code, and Claude Code finds its way around it. Try:
 
 - *"Add Crunchyroll to the shelf."*
-- *"Show the prices in euros."*
 - *"Add Catalan."*
 - *"Switch to the night look an hour after sunset."*
 
@@ -108,13 +105,13 @@ It's your code, and Claude Code finds its way around it. Try:
 
 - **Plain HTML, CSS and JavaScript, no frameworks.** The app is [`web/`](web), written for the Chromium of older Samsung TVs. [`tizen/build.py`](tizen/build.py) packs it with `config.properties` into a Samsung `.wgt`, and [`tizen/install.py`](tizen/install.py) installs it through Developer Mode over SDB. To preview it on a computer: `python3 tizen/build.py --preview`, then open `out/tizen/index.html` (a stand-in lists sample apps).
 - **The TV's apps and inputs** come from Samsung's web APIs (`tizen.application`, `tizen.tvwindow`), and Live TV tunes the antenna before its viewer opens.
-- **Data** comes from Open-Meteo (forecast, sunrise and sunset, air quality) and, when `show_crypto=true`, Binance (24-hour prices).
+- **Data** comes from Open-Meteo (forecast, sunrise and sunset, air quality).
 
 | File | What it is |
 |---|---|
 | [`web/home.js`](web/home.js) | The home screen |
 | [`web/tv.js`](web/tv.js) | The TV's apps and inputs |
-| [`web/data.js`](web/data.js) | Weather and prices |
+| [`web/data.js`](web/data.js) | Weather |
 | [`web/strings.js`](web/strings.js) | Text in the viewer's language |
 | [`tizen/build.py`](tizen/build.py) | The Samsung app package |
 | [`tizen/install.py`](tizen/install.py) | Installs the package over SDB |
@@ -145,14 +142,14 @@ reference (fix them by hand); the others were machine-made, and corrections from
 
 ## Privacy
 
-No accounts, no analytics, no tracking. The app talks to Open-Meteo (their forecast at api.open-meteo.com, the city search at geocoding-api.open-meteo.com and their air quality at air-quality-api.open-meteo.com, with the coordinates you set), and Binance only when `show_crypto=true`. Your settings stay on your computer and your TV.
+No accounts, no analytics, no tracking. The app talks to Open-Meteo (their forecast at api.open-meteo.com, the city search at geocoding-api.open-meteo.com and their air quality at air-quality-api.open-meteo.com, with the coordinates you set). Your settings stay on your computer and your TV.
 
 ## Credits
 
 - Built with [Claude Code](https://claude.com/claude-code).
 - On Samsung TVs it installs with [TizenBrew Installer](https://github.com/reisxd/TizenBrewInstaller) by [@reisxd](https://github.com/reisxd).
-- Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). Prices from the [Binance](https://www.binance.com/) public API.
-- Icons: [Material Symbols](https://fonts.google.com/icons) (Apache 2.0). Font: [Inter](https://rsms.me/inter/) (SIL OFL 1.1). Coin logos: [cryptocurrency-icons](https://github.com/spothq/cryptocurrency-icons) (CC0). Samsung app logos: [Simple Icons](https://simpleicons.org) (CC0).
+- Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0).
+- Icons: [Material Symbols](https://fonts.google.com/icons) (Apache 2.0). Font: [Inter](https://rsms.me/inter/) (SIL OFL 1.1). Samsung app logos: [Simple Icons](https://simpleicons.org) (CC0).
 - Not affiliated with Samsung or any streaming service. App names and logos belong to their owners.
 
 ## License
