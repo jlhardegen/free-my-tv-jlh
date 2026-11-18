@@ -1,7 +1,6 @@
 {
  "12 hours": "12 heures",
  "24 hours": "24 heures",
- "24h change": "variation sur 24 h",
  "AQI {n}": "AQI {n}",
  "About this TV": "À propos de ce téléviseur",
  "All Apps": "Toutes les apps",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Impossible d'ouvrir les réglages de la TV",
  "Couldn't open {app}.": "Impossible d'ouvrir {app}.",
  "Couldn't search now: {error}": "Recherche impossible pour l'instant : {error}",
- "Crypto": "Crypto",
  "Dark": "Sombre",
  "Dim": "Atténuer",
- "Dollar": "Dollar",
  "Drizzle": "Bruine",
  "Firmware": "Micrologiciel",
  "Fog": "Brouillard",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK affiche ou masque une entrée. ← → changent l'ordre.",
  "Off": "Désactivé",
  "Partly Cloudy": "Partiellement nuageux",
- "Quotes widget": "Widget des cours",
  "Rain": "Pluie",
  "Rain in ~{time}": "Pluie dans ~{time}",
  "Search": "Rechercher",
@@ -104,7 +100,6 @@
  "month|Oct": "oct.",
  "month|Sep": "sept.",
  "night|Clear": "Ciel dégagé",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Désactivé",
  "unit|Automatic": "Automatique",
  "weekday|Fri": "ven.",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "mardi",
  "weekday|Wed": "mer.",
  "weekday|Wednesday": "mercredi",
- "{n} h ago": "il y a {n} h",
- "{n} min": "{n} min",
- "{n} min ago": "il y a {n} min"
+ "{n} min": "{n} min"
 }

@@ -1,7 +1,6 @@
 {
  "12 hours": "12 hodín",
  "24 hours": "24 hodín",
- "24h change": "zmena za 24 h",
  "AQI {n}": "AQI {n}",
  "About this TV": "O tomto televízore",
  "All Apps": "Všetky aplikácie",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Nastavenia TV sa nepodarilo otvoriť",
  "Couldn't open {app}.": "Nepodarilo sa otvoriť: {app}.",
  "Couldn't search now: {error}": "Teraz nie je možné vyhľadávať: {error}",
- "Crypto": "Krypto",
  "Dark": "Tmavý",
  "Dim": "Stlmiť",
- "Dollar": "Dolár",
  "Drizzle": "Mrholenie",
  "Firmware": "Firmvér",
  "Fog": "Hmla",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK zobrazí alebo skryje vstup. ← → mení poradie.",
  "Off": "Vypnuté",
  "Partly Cloudy": "Polojasno",
- "Quotes widget": "Widget kurzov",
  "Rain": "Dážď",
  "Rain in ~{time}": "Dážď o ~{time}",
  "Search": "Hľadať",
@@ -104,7 +100,6 @@
  "month|Oct": "okt",
  "month|Sep": "sep",
  "night|Clear": "Jasno",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Vypnuté",
  "unit|Automatic": "Automaticky",
  "weekday|Fri": "pi",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "utorok",
  "weekday|Wed": "st",
  "weekday|Wednesday": "streda",
- "{n} h ago": "pred {n} h",
- "{n} min": "{n} min",
- "{n} min ago": "pred {n} min"
+ "{n} min": "{n} min"
 }

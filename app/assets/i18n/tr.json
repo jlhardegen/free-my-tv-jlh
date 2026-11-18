@@ -1,7 +1,6 @@
 {
  "12 hours": "12 saat",
  "24 hours": "24 saat",
- "24h change": "24 saatlik değişim",
  "AQI {n}": "AQI {n}",
  "About this TV": "Bu TV hakkında",
  "All Apps": "Tüm Uygulamalar",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "TV Ayarları açılamadı",
  "Couldn't open {app}.": "{app} açılamadı.",
  "Couldn't search now: {error}": "Şu anda aranamadı: {error}",
- "Crypto": "Kripto",
  "Dark": "Koyu",
  "Dim": "Karartma",
- "Dollar": "Dolar",
  "Drizzle": "Çiseleme",
  "Firmware": "Donanım yazılımı",
  "Fog": "Sisli",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK bir girişi gösterir veya gizler. ← → sırayı değiştirir.",
  "Off": "Kapalı",
  "Partly Cloudy": "Parçalı bulutlu",
- "Quotes widget": "Fiyat widget'ı",
  "Rain": "Yağmur",
  "Rain in ~{time}": "~{time} sonra yağmur",
  "Search": "Ara",
@@ -104,7 +100,6 @@
  "month|Oct": "Eki",
  "month|Sep": "Eyl",
  "night|Clear": "Açık",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Kapalı",
  "unit|Automatic": "Otomatik",
  "weekday|Fri": "Cum",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "Salı",
  "weekday|Wed": "Çar",
  "weekday|Wednesday": "Çarşamba",
- "{n} h ago": "{n} sa önce",
- "{n} min": "{n} dk",
- "{n} min ago": "{n} dk önce"
+ "{n} min": "{n} dk"
 }

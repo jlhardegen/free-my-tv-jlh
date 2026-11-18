@@ -1,7 +1,6 @@
 {
  "12 hours": "12 ore",
  "24 hours": "24 de ore",
- "24h change": "variație în 24 h",
  "AQI {n}": "AQI {n}",
  "About this TV": "Despre acest televizor",
  "All Apps": "Toate aplicațiile",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Nu am putut deschide setările TV",
  "Couldn't open {app}.": "Nu am putut deschide {app}.",
  "Couldn't search now: {error}": "Nu pot căuta acum: {error}",
- "Crypto": "Cripto",
  "Dark": "Întunecat",
  "Dim": "Estompare",
- "Dollar": "Dolar",
  "Drizzle": "Burniță",
  "Firmware": "Firmware",
  "Fog": "Ceață",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK arată sau ascunde o intrare. ← → schimbă ordinea.",
  "Off": "Dezactivat",
  "Partly Cloudy": "Parțial noros",
- "Quotes widget": "Widget cotații",
  "Rain": "Ploaie",
  "Rain in ~{time}": "Ploaie în ~{time}",
  "Search": "Caută",
@@ -104,7 +100,6 @@
  "month|Oct": "oct.",
  "month|Sep": "sept.",
  "night|Clear": "Senin",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Dezactivat",
  "unit|Automatic": "Automat",
  "weekday|Fri": "vin.",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "marți",
  "weekday|Wed": "mie.",
  "weekday|Wednesday": "miercuri",
- "{n} h ago": "acum {n} h",
- "{n} min": "{n} min",
- "{n} min ago": "acum {n} min"
+ "{n} min": "{n} min"
 }

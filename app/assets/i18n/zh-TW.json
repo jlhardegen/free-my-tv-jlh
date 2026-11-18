@@ -1,7 +1,6 @@
 {
  "12 hours": "12 小時",
  "24 hours": "24 小時",
- "24h change": "24 小時漲跌",
  "AQI {n}": "空氣指數 {n}",
  "About this TV": "關於這台電視",
  "All Apps": "所有應用程式",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "無法開啟電視設定",
  "Couldn't open {app}.": "無法開啟 {app}。",
  "Couldn't search now: {error}": "目前無法搜尋：{error}",
- "Crypto": "加密貨幣",
  "Dark": "深色",
  "Dim": "調暗",
- "Dollar": "美元",
  "Drizzle": "毛毛雨",
  "Firmware": "韌體",
  "Fog": "有霧",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "按下 OK 可顯示或隱藏輸入源。按 ← → 可調整順序。",
  "Off": "關閉",
  "Partly Cloudy": "局部多雲",
- "Quotes widget": "加密貨幣行情小工具",
  "Rain": "下雨",
  "Rain in ~{time}": "約 {time} 後下雨",
  "Search": "搜尋",
@@ -104,7 +100,6 @@
  "month|Oct": "10月",
  "month|Sep": "9月",
  "night|Clear": "晴朗",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "關閉",
  "unit|Automatic": "自動",
  "weekday|Fri": "週五",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "星期二",
  "weekday|Wed": "週三",
  "weekday|Wednesday": "星期三",
- "{n} h ago": "{n} 小時前",
- "{n} min": "{n} 分鐘",
- "{n} min ago": "{n} 分鐘前"
+ "{n} min": "{n} 分鐘"
 }

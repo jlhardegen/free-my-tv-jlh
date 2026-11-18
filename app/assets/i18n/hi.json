@@ -1,7 +1,6 @@
 {
  "12 hours": "12 घंटे",
  "24 hours": "24 घंटे",
- "24h change": "24 घंटे का बदलाव",
  "AQI {n}": "AQI {n}",
  "About this TV": "इस टीवी के बारे में",
  "All Apps": "सभी ऐप",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "TV सेटिंग नहीं खुल सकी",
  "Couldn't open {app}.": "{app} नहीं खुल सका।",
  "Couldn't search now: {error}": "अभी खोज नहीं हो सकती: {error}",
- "Crypto": "क्रिप्टो",
  "Dark": "डार्क",
  "Dim": "मंद",
- "Dollar": "डॉलर",
  "Drizzle": "बूँदाबाँदी",
  "Firmware": "फ़र्मवेयर",
  "Fog": "कोहरा",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK से इनपुट दिखाएँ या छिपाएँ। ← → से क्रम बदलें।",
  "Off": "बंद",
  "Partly Cloudy": "आंशिक बादल",
- "Quotes widget": "भाव विजेट",
  "Rain": "बारिश",
  "Rain in ~{time}": "~{time} में बारिश",
  "Search": "खोजें",
@@ -104,7 +100,6 @@
  "month|Oct": "अक्तू॰",
  "month|Sep": "सित॰",
  "night|Clear": "साफ़",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "बंद",
  "unit|Automatic": "अपने-आप",
  "weekday|Fri": "शुक्र",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "मंगलवार",
  "weekday|Wed": "बुध",
  "weekday|Wednesday": "बुधवार",
- "{n} h ago": "{n} घं पहले",
- "{n} min": "{n} मिनट",
- "{n} min ago": "{n} मि पहले"
+ "{n} min": "{n} मिनट"
 }

@@ -1,7 +1,6 @@
 {
  "12 hours": "12 tuntia",
  "24 hours": "24 tuntia",
- "24h change": "muutos 24 h",
  "AQI {n}": "AQI {n}",
  "About this TV": "Tietoja tästä televisiosta",
  "All Apps": "Kaikki sovellukset",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "TV:n asetuksia ei voitu avata",
  "Couldn't open {app}.": "Ei voitu avata: {app}.",
  "Couldn't search now: {error}": "Haku ei onnistu nyt: {error}",
- "Crypto": "Krypto",
  "Dark": "Tumma",
  "Dim": "Himmennä",
- "Dollar": "Dollari",
  "Drizzle": "Tihkusadetta",
  "Firmware": "Laiteohjelmisto",
  "Fog": "Sumua",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK näyttää tai piilottaa tulon. ← → muuttavat järjestystä.",
  "Off": "Pois",
  "Partly Cloudy": "Puolipilvistä",
- "Quotes widget": "Kurssiwidget",
  "Rain": "Sadetta",
  "Rain in ~{time}": "Sadetta ~{time} kuluttua",
  "Search": "Hae",
@@ -104,7 +100,6 @@
  "month|Oct": "lokak.",
  "month|Sep": "syysk.",
  "night|Clear": "Selkeää",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Pois",
  "unit|Automatic": "Automaattinen",
  "weekday|Fri": "pe",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "tiistai",
  "weekday|Wed": "ke",
  "weekday|Wednesday": "keskiviikko",
- "{n} h ago": "{n} h sitten",
- "{n} min": "{n} min",
- "{n} min ago": "{n} min sitten"
+ "{n} min": "{n} min"
 }

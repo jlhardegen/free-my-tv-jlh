@@ -1,7 +1,6 @@
 {
  "12 hours": "12 ชั่วโมง",
  "24 hours": "24 ชั่วโมง",
- "24h change": "เปลี่ยนแปลง 24 ชม.",
  "AQI {n}": "AQI {n}",
  "About this TV": "เกี่ยวกับทีวีเครื่องนี้",
  "All Apps": "แอปทั้งหมด",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "เปิดตั้งค่าทีวีไม่ได้",
  "Couldn't open {app}.": "เปิด {app} ไม่ได้",
  "Couldn't search now: {error}": "ค้นหาตอนนี้ไม่ได้: {error}",
- "Crypto": "คริปโต",
  "Dark": "มืด",
  "Dim": "หรี่จอ",
- "Dollar": "ดอลลาร์",
  "Drizzle": "ฝนปรอย ๆ",
  "Firmware": "เฟิร์มแวร์",
  "Fog": "หมอก",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK แสดงหรือซ่อนช่องสัญญาณ ← → เปลี่ยนลำดับ",
  "Off": "ปิด",
  "Partly Cloudy": "มีเมฆบางส่วน",
- "Quotes widget": "วิดเจ็ตราคา",
  "Rain": "ฝนตก",
  "Rain in ~{time}": "ฝนจะตกในอีก ~{time}",
  "Search": "ค้นหา",
@@ -104,7 +100,6 @@
  "month|Oct": "ต.ค.",
  "month|Sep": "ก.ย.",
  "night|Clear": "ท้องฟ้าใสยามค่ำ",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "ปิด",
  "unit|Automatic": "อัตโนมัติ",
  "weekday|Fri": "ศ.",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "วันอังคาร",
  "weekday|Wed": "พ.",
  "weekday|Wednesday": "วันพุธ",
- "{n} h ago": "{n} ชม.ที่แล้ว",
- "{n} min": "{n} นาที",
- "{n} min ago": "{n} นาทีที่แล้ว"
+ "{n} min": "{n} นาที"
 }

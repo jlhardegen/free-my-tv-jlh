@@ -1,7 +1,6 @@
 {
  "12 hours": "١٢ ساعة",
  "24 hours": "٢٤ ساعة",
- "24h change": "التغيّر خلال ٢٤ ساعة",
  "AQI {n}": "جودة الهواء {n}",
  "About this TV": "حول هذا التلفزيون",
  "All Apps": "كل التطبيقات",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "تعذّر فتح إعدادات التلفزيون",
  "Couldn't open {app}.": "تعذّر فتح {app}.",
  "Couldn't search now: {error}": "تعذّر البحث الآن: {error}",
- "Crypto": "العملات الرقمية",
  "Dark": "داكن",
  "Dim": "التعتيم",
- "Dollar": "الدولار",
  "Drizzle": "رذاذ",
  "Firmware": "البرنامج الثابت",
  "Fog": "ضباب",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK لإظهار مدخل أو إخفائه. ← → لتغيير الترتيب.",
  "Off": "إيقاف",
  "Partly Cloudy": "غائم جزئيًا",
- "Quotes widget": "عنصر الأسعار",
  "Rain": "مطر",
  "Rain in ~{time}": "مطر بعد ~{time}",
  "Search": "بحث",
@@ -104,7 +100,6 @@
  "month|Oct": "أكتوبر",
  "month|Sep": "سبتمبر",
  "night|Clear": "صافية",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "إيقاف",
  "unit|Automatic": "تلقائي",
  "weekday|Fri": "الجمعة",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "الثلاثاء",
  "weekday|Wed": "الأربعاء",
  "weekday|Wednesday": "الأربعاء",
- "{n} h ago": "قبل {n} س",
- "{n} min": "{n} د",
- "{n} min ago": "قبل {n} د"
+ "{n} min": "{n} د"
 }

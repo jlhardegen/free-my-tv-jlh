@@ -1,7 +1,6 @@
 {
  "12 hours": "12 Stunden",
  "24 hours": "24 Stunden",
- "24h change": "Änderung in 24 h",
  "AQI {n}": "AQI {n}",
  "About this TV": "Über diesen Fernseher",
  "All Apps": "Alle Apps",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Die TV-Einstellungen ließen sich nicht öffnen",
  "Couldn't open {app}.": "Konnte nicht öffnen: {app}.",
  "Couldn't search now: {error}": "Suche gerade nicht möglich: {error}",
- "Crypto": "Krypto",
  "Dark": "Dunkel",
  "Dim": "Abdunkeln",
- "Dollar": "Dollar",
  "Drizzle": "Nieselregen",
  "Firmware": "Firmware",
  "Fog": "Nebel",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK zeigt einen Eingang an oder blendet ihn aus. ← → ändern die Reihenfolge.",
  "Off": "Aus",
  "Partly Cloudy": "Teilweise bewölkt",
- "Quotes widget": "Kurs-Widget",
  "Rain": "Regen",
  "Rain in ~{time}": "Regen in ~{time}",
  "Search": "Suchen",
@@ -104,7 +100,6 @@
  "month|Oct": "Okt.",
  "month|Sep": "Sept.",
  "night|Clear": "Klar",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Aus",
  "unit|Automatic": "Automatisch",
  "weekday|Fri": "Fr.",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "Dienstag",
  "weekday|Wed": "Mi.",
  "weekday|Wednesday": "Mittwoch",
- "{n} h ago": "vor {n} Std.",
- "{n} min": "{n} Min.",
- "{n} min ago": "vor {n} Min."
+ "{n} min": "{n} Min."
 }

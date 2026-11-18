@@ -1,7 +1,6 @@
 {
  "12 hours": "12 小时",
  "24 hours": "24 小时",
- "24h change": "24 小时涨跌",
  "AQI {n}": "空气指数 {n}",
  "About this TV": "关于此电视",
  "All Apps": "所有应用",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "无法打开电视设置",
  "Couldn't open {app}.": "无法打开{app}。",
  "Couldn't search now: {error}": "暂时无法搜索：{error}",
- "Crypto": "加密货币",
  "Dark": "深色",
  "Dim": "调暗",
- "Dollar": "美元",
  "Drizzle": "毛毛雨",
  "Firmware": "固件",
  "Fog": "雾",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "按 OK 显示或隐藏输入。← → 调整顺序。",
  "Off": "关",
  "Partly Cloudy": "多云",
- "Quotes widget": "行情小组件",
  "Rain": "雨",
  "Rain in ~{time}": "约 {time} 后下雨",
  "Search": "搜索",
@@ -104,7 +100,6 @@
  "month|Oct": "10月",
  "month|Sep": "9月",
  "night|Clear": "晴朗",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "关",
  "unit|Automatic": "自动",
  "weekday|Fri": "周五",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "星期二",
  "weekday|Wed": "周三",
  "weekday|Wednesday": "星期三",
- "{n} h ago": "{n} 小时前",
- "{n} min": "{n} 分钟",
- "{n} min ago": "{n} 分钟前"
+ "{n} min": "{n} 分钟"
 }

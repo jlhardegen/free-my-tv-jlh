@@ -1,7 +1,6 @@
 {
  "12 hours": "12 uur",
  "24 hours": "24 uur",
- "24h change": "verandering in 24 u",
  "AQI {n}": "AQI {n}",
  "About this TV": "Over deze tv",
  "All Apps": "Alle apps",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Kon de tv-instellingen niet openen",
  "Couldn't open {app}.": "Kon {app} niet openen.",
  "Couldn't search now: {error}": "Zoeken lukt nu niet: {error}",
- "Crypto": "Crypto",
  "Dark": "Donker",
  "Dim": "Dimmen",
- "Dollar": "Dollar",
  "Drizzle": "Motregen",
  "Firmware": "Firmware",
  "Fog": "Mist",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK toont een ingang of verbergt hem. ← → wijzigen de volgorde.",
  "Off": "Uit",
  "Partly Cloudy": "Half bewolkt",
- "Quotes widget": "Koerswidget",
  "Rain": "Regen",
  "Rain in ~{time}": "Regen over ~{time}",
  "Search": "Zoeken",
@@ -104,7 +100,6 @@
  "month|Oct": "okt.",
  "month|Sep": "sep.",
  "night|Clear": "Helder",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Uit",
  "unit|Automatic": "Automatisch",
  "weekday|Fri": "vr",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "dinsdag",
  "weekday|Wed": "wo",
  "weekday|Wednesday": "woensdag",
- "{n} h ago": "{n} u geleden",
- "{n} min": "{n} min",
- "{n} min ago": "{n} min geleden"
+ "{n} min": "{n} min"
 }

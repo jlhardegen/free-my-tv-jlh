@@ -1,7 +1,6 @@
 {
  "12 hours": "12時間",
  "24 hours": "24時間",
- "24h change": "24時間の変動",
  "AQI {n}": "AQI {n}",
  "About this TV": "このテレビについて",
  "All Apps": "すべてのアプリ",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "テレビの設定を開けませんでした",
  "Couldn't open {app}.": "{app}を開けませんでした。",
  "Couldn't search now: {error}": "今は検索できません：{error}",
- "Crypto": "暗号資産",
  "Dark": "ダーク",
  "Dim": "暗さ",
- "Dollar": "ドル",
  "Drizzle": "霧雨",
  "Firmware": "ファームウェア",
  "Fog": "霧",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OKで入力を表示・非表示。← → で順番を変更。",
  "Off": "オフ",
  "Partly Cloudy": "晴れ時々曇り",
- "Quotes widget": "相場ウィジェット",
  "Rain": "雨",
  "Rain in ~{time}": "~{time}後に雨",
  "Search": "検索",
@@ -104,7 +100,6 @@
  "month|Oct": "10月",
  "month|Sep": "9月",
  "night|Clear": "快晴",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "オフ",
  "unit|Automatic": "自動",
  "weekday|Fri": "金",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "火曜日",
  "weekday|Wed": "水",
  "weekday|Wednesday": "水曜日",
- "{n} h ago": "{n}時間前",
- "{n} min": "{n}分",
- "{n} min ago": "{n}分前"
+ "{n} min": "{n}分"
 }

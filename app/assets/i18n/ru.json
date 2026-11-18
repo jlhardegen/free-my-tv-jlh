@@ -1,7 +1,6 @@
 {
  "12 hours": "12 часов",
  "24 hours": "24 часа",
- "24h change": "изменение за 24 ч",
  "AQI {n}": "AQI {n}",
  "About this TV": "Об этом телевизоре",
  "All Apps": "Приложения",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Не удалось открыть настройки телевизора",
  "Couldn't open {app}.": "Не удалось открыть {app}.",
  "Couldn't search now: {error}": "Не удалось выполнить поиск: {error}",
- "Crypto": "Криптовалюты",
  "Dark": "Тёмная",
  "Dim": "Затемнение",
- "Dollar": "Доллар",
  "Drizzle": "Морось",
  "Firmware": "Прошивка",
  "Fog": "Туман",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK — показать или скрыть вход. ← → — изменить порядок.",
  "Off": "Выкл.",
  "Partly Cloudy": "Переменная облачность",
- "Quotes widget": "Виджет котировок",
  "Rain": "Дождь",
  "Rain in ~{time}": "Дождь через ~{time}",
  "Search": "Найти",
@@ -104,7 +100,6 @@
  "month|Oct": "окт.",
  "month|Sep": "сент.",
  "night|Clear": "Ясно",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Выкл.",
  "unit|Automatic": "Автоматически",
  "weekday|Fri": "пт",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "вторник",
  "weekday|Wed": "ср",
  "weekday|Wednesday": "среда",
- "{n} h ago": "{n} ч назад",
- "{n} min": "{n} мин",
- "{n} min ago": "{n} мин назад"
+ "{n} min": "{n} мин"
 }

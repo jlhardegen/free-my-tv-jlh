@@ -1,7 +1,6 @@
 {
  "12 hours": "12 годин",
  "24 hours": "24 години",
- "24h change": "зміна за 24 год",
  "AQI {n}": "AQI {n}",
  "About this TV": "Про цей телевізор",
  "All Apps": "Усі додатки",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Не вдалося відкрити налаштування ТВ",
  "Couldn't open {app}.": "Не вдалося відкрити {app}.",
  "Couldn't search now: {error}": "Зараз пошук недоступний: {error}",
- "Crypto": "Крипто",
  "Dark": "Темна",
  "Dim": "Затемнення",
- "Dollar": "Долар",
  "Drizzle": "Мряка",
  "Firmware": "Прошивка",
  "Fog": "Туман",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK показує або приховує вхід. ← → змінюють порядок.",
  "Off": "Вимк.",
  "Partly Cloudy": "Мінлива хмарність",
- "Quotes widget": "Віджет курсів",
  "Rain": "Дощ",
  "Rain in ~{time}": "Дощ через ~{time}",
  "Search": "Шукати",
@@ -104,7 +100,6 @@
  "month|Oct": "жовт.",
  "month|Sep": "вер.",
  "night|Clear": "Ясно",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Вимк.",
  "unit|Automatic": "Автоматично",
  "weekday|Fri": "пт",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "вівторок",
  "weekday|Wed": "ср",
  "weekday|Wednesday": "середа",
- "{n} h ago": "{n} год тому",
- "{n} min": "{n} хв",
- "{n} min ago": "{n} хв тому"
+ "{n} min": "{n} хв"
 }

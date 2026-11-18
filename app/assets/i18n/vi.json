@@ -1,7 +1,6 @@
 {
  "12 hours": "12 giờ",
  "24 hours": "24 giờ",
- "24h change": "thay đổi 24 giờ",
  "AQI {n}": "AQI {n}",
  "About this TV": "Giới thiệu về TV này",
  "All Apps": "Tất cả ứng dụng",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Không mở được Cài đặt TV",
  "Couldn't open {app}.": "Không mở được {app}.",
  "Couldn't search now: {error}": "Hiện không tìm được: {error}",
- "Crypto": "Tiền mã hóa",
  "Dark": "Tối",
  "Dim": "Làm mờ",
- "Dollar": "Đô la",
  "Drizzle": "Mưa phùn",
  "Firmware": "Chương trình cơ sở",
  "Fog": "Sương mù",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK để hiện hoặc ẩn đầu vào. ← → để đổi thứ tự.",
  "Off": "Tắt",
  "Partly Cloudy": "Có mây",
- "Quotes widget": "Tiện ích tỷ giá",
  "Rain": "Mưa",
  "Rain in ~{time}": "Mưa sau ~{time}",
  "Search": "Tìm",
@@ -104,7 +100,6 @@
  "month|Oct": "Th10",
  "month|Sep": "Th9",
  "night|Clear": "Quang đãng",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Tắt",
  "unit|Automatic": "Tự động",
  "weekday|Fri": "Th 6",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "Thứ Ba",
  "weekday|Wed": "Th 4",
  "weekday|Wednesday": "Thứ Tư",
- "{n} h ago": "{n} giờ trước",
- "{n} min": "{n} phút",
- "{n} min ago": "{n} phút trước"
+ "{n} min": "{n} phút"
 }

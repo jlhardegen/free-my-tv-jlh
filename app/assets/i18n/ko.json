@@ -1,7 +1,6 @@
 {
  "12 hours": "12시간",
  "24 hours": "24시간",
- "24h change": "24시간 변동",
  "AQI {n}": "AQI {n}",
  "About this TV": "이 TV 정보",
  "All Apps": "모든 앱",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "TV 설정을 열 수 없습니다.",
  "Couldn't open {app}.": "{app}을(를) 열 수 없습니다.",
  "Couldn't search now: {error}": "지금은 검색할 수 없습니다: {error}",
- "Crypto": "암호화폐",
  "Dark": "어둡게",
  "Dim": "어둡게",
- "Dollar": "달러",
  "Drizzle": "이슬비",
  "Firmware": "펌웨어",
  "Fog": "안개",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK로 입력 표시 또는 숨기기. ← →로 순서 변경.",
  "Off": "끔",
  "Partly Cloudy": "구름 조금",
- "Quotes widget": "시세 위젯",
  "Rain": "비",
  "Rain in ~{time}": "~{time} 후 비",
  "Search": "검색",
@@ -104,7 +100,6 @@
  "month|Oct": "10월",
  "month|Sep": "9월",
  "night|Clear": "맑음",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "끔",
  "unit|Automatic": "자동",
  "weekday|Fri": "금",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "화요일",
  "weekday|Wed": "수",
  "weekday|Wednesday": "수요일",
- "{n} h ago": "{n}시간 전",
- "{n} min": "{n}분",
- "{n} min ago": "{n}분 전"
+ "{n} min": "{n}분"
 }

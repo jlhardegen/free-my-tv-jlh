@@ -1,7 +1,6 @@
 {
  "12 hours": "12 ώρες",
  "24 hours": "24 ώρες",
- "24h change": "μεταβολή 24 ωρών",
  "AQI {n}": "AQI {n}",
  "About this TV": "Σχετικά με την τηλεόραση",
  "All Apps": "Όλες οι εφαρμογές",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Δεν ήταν δυνατό το άνοιγμα των ρυθμίσεων TV",
  "Couldn't open {app}.": "Δεν ήταν δυνατό το άνοιγμα: {app}.",
  "Couldn't search now: {error}": "Η αναζήτηση δεν είναι δυνατή τώρα: {error}",
- "Crypto": "Κρυπτο",
  "Dark": "Σκούρο",
  "Dim": "Χαμήλωση φωτεινότητας",
- "Dollar": "Δολάριο",
  "Drizzle": "Ψιχάλα",
  "Firmware": "Υλικολογισμικό",
  "Fog": "Ομίχλη",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "Το OK εμφανίζει ή αποκρύπτει μια είσοδο. Τα ← → αλλάζουν τη σειρά.",
  "Off": "Ανενεργό",
  "Partly Cloudy": "Μερική συννεφιά",
- "Quotes widget": "Widget τιμών",
  "Rain": "Βροχή",
  "Rain in ~{time}": "Βροχή σε ~{time}",
  "Search": "Αναζήτηση",
@@ -104,7 +100,6 @@
  "month|Oct": "Οκτ",
  "month|Sep": "Σεπ",
  "night|Clear": "Αίθριος",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Ανενεργό",
  "unit|Automatic": "Αυτόματο",
  "weekday|Fri": "Παρ",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "Τρίτη",
  "weekday|Wed": "Τετ",
  "weekday|Wednesday": "Τετάρτη",
- "{n} h ago": "πριν από {n} ώ.",
- "{n} min": "{n} λεπ.",
- "{n} min ago": "πριν από {n} λ."
+ "{n} min": "{n} λεπ."
 }

@@ -1,7 +1,6 @@
 {
  "12 hours": "12 timer",
  "24 hours": "24 timer",
- "24h change": "endring siste 24 t",
  "AQI {n}": "AQI {n}",
  "About this TV": "Om denne TV-en",
  "All Apps": "Alle apper",
@@ -14,10 +13,8 @@
  "Couldn't open TV Settings": "Kunne ikke åpne TV-innstillingene",
  "Couldn't open {app}.": "Kunne ikke åpne {app}.",
  "Couldn't search now: {error}": "Kunne ikke søke nå: {error}",
- "Crypto": "Krypto",
  "Dark": "Mørkt",
  "Dim": "Demp",
- "Dollar": "Dollar",
  "Drizzle": "Yr",
  "Firmware": "Fastvare",
  "Fog": "Tåke",
@@ -47,7 +44,6 @@
  "OK shows or hides an input. ← → change the order.": "OK viser eller skjuler en inngang. ← → endrer rekkefølgen.",
  "Off": "Av",
  "Partly Cloudy": "Delvis skyet",
- "Quotes widget": "Kurswidget",
  "Rain": "Regn",
  "Rain in ~{time}": "Regn om ~{time}",
  "Search": "Søk",
@@ -104,7 +100,6 @@
  "month|Oct": "okt.",
  "month|Sep": "sep.",
  "night|Clear": "Klart",
- "quotes|{ago}": "{ago}",
  "shelf|Off": "Av",
  "unit|Automatic": "Automatisk",
  "weekday|Fri": "fre.",
@@ -121,7 +116,5 @@
  "weekday|Tuesday": "tirsdag",
  "weekday|Wed": "ons.",
  "weekday|Wednesday": "onsdag",
- "{n} h ago": "for {n} t siden",
- "{n} min": "{n} min",
- "{n} min ago": "for {n} min siden"
+ "{n} min": "{n} min"
 }
